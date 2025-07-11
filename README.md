@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Xác Minh Tình Yêu - Phan Cao Triều</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #fff0f5, #ffe0ec);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    h1 {
+      color: #c2185b;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .drag-area {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 30px;
+    }
+    .drop-zone {
+      width: 150px;
+      height: 150px;
+      border: 3px dashed #ff80aa;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #fff;
+      color: #e91e63;
+      font-weight: bold;
+    }
+    .drop-zone.over {
+      background-color: #ffe6f0;
+    }
+    .images {
+      display: flex;
+      gap: 40px;
+    }
+    .draggable-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      cursor: grab;
+      border: 2px solid #ff66a3;
+    }
+    .button-check {
+      margin-top: 25px;
+      padding: 12px 24px;
+      background-color: #ff66a3;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    .button-check:hover {
+      background-color: #e05592;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 Xác minh tình yêu giữa Trẫm và Hoàng hậu</h1>
+
+  <div class="drag-area">
+    <div class="drop-zone" id="zone-tram" ondrop="drop(event, 'tram')" ondragover="allowDrop(event)">Ảnh Trẫm</div>
+    <div class="drop-zone" id="zone-hau" ondrop="drop(event, 'hau')" ondragover="allowDrop(event)">Ảnh Hoàng hậu</div>
+  </div>
+
+  <div class="images">
+    <!-- Trẫm có thể thay ảnh -->
+    <img src="https://github.com/huukhanh2612/kanthy/blob/main/z6795175031497_1b2ae195c53d75e7a0fc7a5f55252aa8.jpg?raw=true" id="img-tram" class="draggable-img" draggable="true" ondragstart="drag(event)" data-name="tram">
+    <img src="https://github.com/huukhanh2612/kanthy/blob/main/z6795175081226_f3729e81338b4a2d19bf9c850e1bb761.jpg?raw=true" id="img-hau" class="draggable-img" draggable="true" ondragstart="drag(event)" data-name="hau">
+  </div>
+
+  <button class="button-check" onclick="check()">✅ Xác minh và vào cổng</button>
+
+  <script>
+    let dropState = { tram: null, hau: null };
+
+    function allowDrop(ev) {
+      ev.preventDefault();
+      ev.target.classList.add('over');
+    }
+
+    function drag(ev) {
+      ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev, zone) {
+      ev.preventDefault();
+      const data = ev.dataTransfer.getData("text");
+      const img = document.getElementById(data);
+      if (img) {
+        ev.target.innerHTML = '';
+        ev.target.appendChild(img);
+        dropState[zone] = img.dataset.name;
+      }
+      ev.target.classList.remove('over');
+    }
+
+    function check() {
+      if (dropState.tram === 'tram' && dropState.hau === 'hau') {
+        alert("✅ Xác minh thành công! Vào trang tình yêu nào 💗");
+        // CHUYỂN HẲN sang Google Sites (không nhúng)
+        window.location.href = "https://sites.google.com/view/kangthy/katy";
+      } else {
+        alert("⚠️ Vị trí chưa đúng. Hãy thử lại Trẫm nhé!");
+      }
+    }
+
+    window.onload = () => {
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.ondragleave = e => e.target.classList.remove('over');
+      });
+    };
+  </script>
+</body>
+</html>
