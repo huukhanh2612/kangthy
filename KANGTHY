@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng nhập Tình Sử</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #ffe6f0, #ffe0e6);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-box {
+      z-index: 2;
+      background: #fff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 0, 100, 0.1);
+      text-align: center;
+      max-width: 350px;
+      width: 100%;
+    }
+
+    h2 {
+      color: #c2185b;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #ff80aa;
+      border-radius: 10px;
+      font-size: 1em;
+    }
+
+    button {
+      background-color: #ff66a3;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #e05592;
+    }
+
+    /* Hiệu ứng hình trôi nổi */
+    .float-image {
+      position: absolute;
+      width: 40px;
+      opacity: 0.8;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.8);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-box">
+    <h2>🔐 Đăng nhập Hoàng Gia</h2>
+    <input type="text" id="username" placeholder="Tên đăng nhập">
+    <input type="password" id="password" placeholder="Mật khẩu">
+    <button onclick="login()">Đăng nhập</button>
+  </div>
+
+  <!-- Các hình ảnh trôi nổi (có thể thêm hoặc thay đổi link ảnh) -->
+  <script>
+    const imageSources = [
+      'https://raw.githubusercontent.com/huukhanh2612/kanthy/refs/heads/main/z6795174974878_a311b7868db33948fa20bf81e8bc23b3.jpg',  // Tim
+      'https://github.com/huukhanh2612/kanthy/blob/main/z6795174980987_4f906b7887c342c6adeb619224eacdff.jpg?raw=true',  // Hoa
+      'https://github.com/huukhanh2612/kanthy/blob/main/z6795175031497_1b2ae195c53d75e7a0fc7a5f55252aa8.jpg?raw=true',  // Trái tim bóng
+    ];
+
+    for (let i = 0; i < 30; i++) {
+      const img = document.createElement('img');
+      img.src = imageSources[Math.floor(Math.random() * imageSources.length)];
+      img.classList.add('float-image');
+
+      // Vị trí và thời gian ngẫu nhiên
+      img.style.left = Math.random() * 100 + 'vw';
+      img.style.animationDuration = 5 + Math.random() * 10 + 's';
+      img.style.animationDelay = Math.random() * 5 + 's';
+      img.style.zIndex = 1;
+
+      document.body.appendChild(img);
+    }
+
+    function login() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      const correctUser = "khanhthy";
+      const correctPass = "khanhthy662025";
+
+     if (user === correctUser && pass === correctPass) {
+    // ✅ Chuyển đến trang Google Sites sau khi đăng nhập thành công
+    window.location.href = "https://sites.google.com/view/kangthy/katy";
+  } else {
+    alert("Sai rồi, Hoàng thượng!");
+  }
+}
+  </script>
+
+</body>
+</html>
