@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Xác Minh Tình Yêu - Phan Cao Triều</title>
+  <title>💘 Cổng Tình Yêu - Phan Cao Triều</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -44,6 +44,7 @@
     .images {
       display: flex;
       gap: 40px;
+      margin-bottom: 25px;
     }
     .draggable-img {
       width: 100px;
@@ -53,7 +54,6 @@
       border: 2px solid #ff66a3;
     }
     .button-check {
-      margin-top: 25px;
       padding: 12px 24px;
       background-color: #ff66a3;
       color: white;
@@ -68,7 +68,7 @@
   </style>
 </head>
 <body>
-  <h1>🔐 Xác minh tình yêu giữa Trẫm và Hoàng hậu</h1>
+  <h1>🔐 Đăng nhập & Xác minh tình yêu giữa Trẫm và Hoàng hậu</h1>
 
   <div class="drag-area">
     <div class="drop-zone" id="zone-tram" ondrop="drop(event, 'tram')" ondragover="allowDrop(event)">Ảnh Trẫm</div>
@@ -76,8 +76,13 @@
   </div>
 
   <div class="images">
-    <img src="https://github.com/huukhanh2612/kangthy/blob/main/z6795175031497_1b2ae195c53d75e7a0fc7a5f55252aa8.jpg?raw=true" id="img-tram" class="draggable-img" draggable="true" ondragstart="drag(event)" data-name="tram">
-    <img src="https://github.com/huukhanh2612/kangthy/blob/main/z6795175081226_f3729e81338b4a2d19bf9c850e1bb761.jpg?raw=true" id="img-hau" class="draggable-img" draggable="true" ondragstart="drag(event)" data-name="hau">
+    <img src="https://github.com/huukhanh2612/kangthy/blob/main/z6795175031497_1b2ae195c53d75e7a0fc7a5f55252aa8.jpg?raw=true" 
+         id="img-tram" class="draggable-img" draggable="true" 
+         ondragstart="drag(event)" data-name="tram" title="Kéo ảnh Trẫm lên khung Trẫm">
+         
+    <img src="https://github.com/huukhanh2612/kangthy/blob/main/z6795175081226_f3729e81338b4a2d19bf9c850e1bb761.jpg?raw=true" 
+         id="img-hau" class="draggable-img" draggable="true" 
+         ondragstart="drag(event)" data-name="hau" title="Kéo ảnh Hoàng hậu lên khung Hoàng hậu">
   </div>
 
   <button class="button-check" onclick="check()">✅ Xác minh và vào cổng</button>
@@ -108,10 +113,10 @@
 
     function check() {
       if (dropState.tram === 'tram' && dropState.hau === 'hau') {
-        alert("✅ Xác minh thành công! Vào trang tình yêu nào 💗");
-        window.location.href = "https://sites.google.com/view/kangthy/katy";
+        alert("✅ Đăng nhập thành công! Tình yêu đã được xác minh 💗");
+        window.location.href = "https://huukhanh2612.github.io/kangthy/"; // Trẫm có thể đổi đường dẫn cổng chính
       } else {
-        alert("⚠️ Vị trí chưa đúng. Hãy thử lại Trẫm nhé!");
+        alert("⚠️ Chưa xác minh đúng. Xin hãy đặt đúng ảnh vào khung!");
       }
     }
 
