@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Xác Minh Tình Yêu - Phan Cao Triều</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -76,9 +76,8 @@
   </div>
 
   <div class="images">
-    <!-- Trẫm có thể thay ảnh -->
-    <img src="https://github.com/huukhanh2612/kanthy/blob/main/z6795175031497_1b2ae195c53d75e7a0fc7a5f55252aa8.jpg?raw=true" id="img-tram" class="draggable-img" draggable="true" ondragstart="drag(event)" data-name="tram">
-    <img src="https://github.com/huukhanh2612/kanthy/blob/main/z6795175081226_f3729e81338b4a2d19bf9c850e1bb761.jpg?raw=true" id="img-hau" class="draggable-img" draggable="true" ondragstart="drag(event)" data-name="hau">
+    <img src="https://github.com/huukhanh2612/kangthy/blob/main/z6795175031497_1b2ae195c53d75e7a0fc7a5f55252aa8.jpg?raw=true" id="img-tram" class="draggable-img" draggable="true" ondragstart="drag(event)" data-name="tram">
+    <img src="https://github.com/huukhanh2612/kangthy/blob/main/z6795175081226_f3729e81338b4a2d19bf9c850e1bb761.jpg?raw=true" id="img-hau" class="draggable-img" draggable="true" ondragstart="drag(event)" data-name="hau">
   </div>
 
   <button class="button-check" onclick="check()">✅ Xác minh và vào cổng</button>
@@ -110,7 +109,6 @@
     function check() {
       if (dropState.tram === 'tram' && dropState.hau === 'hau') {
         alert("✅ Xác minh thành công! Vào trang tình yêu nào 💗");
-        // CHUYỂN HẲN sang Google Sites (không nhúng)
         window.location.href = "https://sites.google.com/view/kangthy/katy";
       } else {
         alert("⚠️ Vị trí chưa đúng. Hãy thử lại Trẫm nhé!");
