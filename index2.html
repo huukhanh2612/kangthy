@@ -227,38 +227,63 @@
     }
 
     // Ghi chú có lưu LocalStorage
-    const noteKey = 'tinh_yeu_phan_cao_notes';
-    function loadNotes() {
-      const saved = localStorage.getItem(noteKey);
-      if (saved) document.getElementById('noteLog').innerHTML = saved;
+   <script>
+  const sheetAPI = "https://script.google.com/macros/s/AKfycbz4i_W4Djj57oTW2ZNAK6uyKSAIl9hiZ9qJ3jzvkXdFES49Cv-XrkU2N7rIA2Uelx8y/exec";
+
+  // Gửi ghi chú vào Google Sheet
+  function addNote() {
+    const nick = document.getElementById('nickname').value.trim();
+    const text = document.getElementById('noteText').value.trim();
+    if (!nick || !text) {
+      alert("Vui lòng điền cả tên và ghi chú.");
+      return;
     }
-    function saveNotes() {
-      const content = document.getElementById('noteLog').innerHTML;
-      localStorage.setItem(noteKey, content);
-    }
-    function addNote() {
-      const nick = document.getElementById('nickname').value.trim();
-      const text = document.getElementById('noteText').value.trim();
-      if (!nick || !text) {
-        alert("Vui lòng điền cả tên và ghi chú.");
-        return;
-      }
-      const now = new Date().toLocaleString("vi-VN");
-      const entry = `<div class="note-entry">🖋️ <strong>${nick}</strong> (${now}):<br>${text.replace(/\n/g, "<br>")}<hr></div>`;
-      const log = document.getElementById('noteLog');
-      log.innerHTML = entry + log.innerHTML;
-      saveNotes();
+
+    const data = {
+      name: nick,
+      note: text
+    };
+
+    fetch(sheetAPI, {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+    .then(res => res.text())
+    .then(msg => {
+      alert("💖 Ghi chú đã được lưu thành công!");
       document.getElementById('nickname').value = "";
       document.getElementById('noteText').value = "";
-    }
-    function clearNotes() {
-      if (confirm("Trẫm có chắc muốn xóa tất cả ghi chú không?")) {
-        localStorage.removeItem(noteKey);
-        document.getElementById('noteLog').innerHTML = "";
-      }
-    }
-    window.onload = loadNotes;
-  </script>
+      loadNotes(); // Cập nhật lại ghi chú sau khi thêm
+    })
+    .catch(err => {
+      console.error(err);
+      alert("❌ Lỗi khi gửi ghi chú. Kiểm tra lại kết nối hoặc Apps Script.");
+    });
+  }
+
+  // Tải ghi chú từ Google Sheets
+  function loadNotes() {
+    fetch("https://docs.google.com/spreadsheets/d/1gfiq9GSkd5zCv_xWrg0KpQh3u1YFSkPQ60hzBYAm5eg/gviz/tq?tqx=out:json") // ← Thay ID nếu khác
+      .then(res => res.text())
+      .then(text => {
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const rows = json.table.rows;
+        let html = "";
+        rows.reverse().forEach(row => {
+          const name = row.c[0]?.v || 'Ẩn danh';
+          const time = row.c[1]?.f || 'Không rõ';
+          const note = row.c[2]?.v || '';
+          html += `<div class="note-entry">🖋️ <strong>${name}</strong> (${time}):<br>${note}<hr></div>`;
+        });
+        document.getElementById("noteLog").innerHTML = html;
+      })
+      .catch(err => {
+        console.error("Lỗi khi tải ghi chú", err);
+      });
+  }
+
+  window.onload = loadNotes;
+</script>
 
 </body>
 </html>
