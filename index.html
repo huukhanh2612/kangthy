@@ -2,31 +2,23 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>🔐 Xác minh Tình Yêu - Phan Cao Triều</title>
+  <title>🔐 Xác minh & Đăng nhập - Phan Cao Triều</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom right, #ffe6f0, #ffe0e6);
       min-height: 100vh;
       display: flex;
-      justify-content: center;
-      align-items: center;
       flex-direction: column;
-      padding: 20px;
+      align-items: center;
+      justify-content: center;
       overflow: hidden;
+      padding: 20px;
     }
-    h1 {
-      color: #c2185b;
-      margin-bottom: 30px;
-      text-align: center;
-    }
-    .drag-area, .images {
-      display: flex;
-      gap: 40px;
-      margin-bottom: 30px;
-    }
+    h1, h2 { color: #c2185b; text-align: center; margin-bottom: 20px; }
+
     .drop-zone {
       width: 150px;
       height: 150px;
@@ -35,33 +27,20 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #fff;
+      background: white;
       color: #e91e63;
       font-weight: bold;
     }
-    .drop-zone.over {
-      background-color: #ffe6f0;
-    }
+    .drop-zone.over { background-color: #ffe6f0; }
     .draggable-img {
-      width: 100px;
-      height: 100px;
+      width: 100px; height: 100px;
+      border: 2px solid #ff66a3;
       border-radius: 12px;
       cursor: grab;
-      border: 2px solid #ff66a3;
     }
-    .button-check, .login-box button {
-      padding: 12px 24px;
-      background-color: #ff66a3;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 1em;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    .button-check:hover, .login-box button:hover {
-      background-color: #e05592;
-    }
+    .section { display: none; }
+    .visible { display: block; }
+
     .login-box {
       background: #fff;
       padding: 30px;
@@ -70,11 +49,9 @@
       text-align: center;
       max-width: 350px;
       width: 100%;
-      display: none;
-      z-index: 2;
     }
-    input[type="text"],
-    input[type="password"] {
+
+    input {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
@@ -83,12 +60,24 @@
       font-size: 1em;
     }
 
+    button {
+      padding: 12px 24px;
+      background-color: #ff66a3;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
     .float-image {
       position: absolute;
       width: 40px;
       opacity: 0.8;
       animation: floatUp linear infinite;
     }
+
     @keyframes floatUp {
       0% { transform: translateY(100vh) scale(0.8); opacity: 0; }
       50% { opacity: 0.8; }
@@ -98,33 +87,32 @@
 </head>
 <body>
 
-  <h1>🔐 Xác minh tình yêu giữa Trẫm và Hoàng hậu</h1>
-
-  <!-- Khu vực xác minh ảnh -->
-  <div id="verify-section">
-    <div class="drag-area">
+  <!-- ✅ Xác minh -->
+  <div class="section visible" id="verify-section">
+    <h1>🔐 Xác minh tình yêu Trẫm & Hoàng hậu</h1>
+    <div style="display: flex; gap: 30px; margin-bottom: 20px;">
       <div class="drop-zone" id="zone-tram" ondrop="drop(event, 'tram')" ondragover="allowDrop(event)">Ảnh Trẫm</div>
-      <div class="drop-zone" id="zone-hau" ondrop="drop(event, 'hau')" ondragover="allowDrop(event)">Ảnh Hoàng hậu</div>
+      <div class="drop-zone" id="zone-hau" ondrop="drop(event, 'hau')" ondragover="allowDrop(event)">Ảnh Hậu</div>
     </div>
-
-    <div class="images">
+    <div style="display: flex; gap: 30px;">
       <img src="https://github.com/huukhanh2612/kanthy/blob/main/z6795175031497_1b2ae195c53d75e7a0fc7a5f55252aa8.jpg?raw=true" id="img-tram" class="draggable-img" draggable="true" ondragstart="drag(event)" data-name="tram">
       <img src="https://github.com/huukhanh2612/kanthy/blob/main/z6795175081226_f3729e81338b4a2d19bf9c850e1bb761.jpg?raw=true" id="img-hau" class="draggable-img" draggable="true" ondragstart="drag(event)" data-name="hau">
     </div>
-
-    <button class="button-check" onclick="checkVerify()">✅ Xác minh để đăng nhập</button>
+    <button onclick="checkVerify()">✅ Xác minh để tiếp tục</button>
   </div>
 
-  <!-- Khu vực đăng nhập -->
-  <div class="login-box" id="login-section">
-    <h2>🔐 Đăng nhập Hoàng Gia</h2>
-    <input type="text" id="username" placeholder="Tên đăng nhập">
-    <input type="password" id="password" placeholder="Mật khẩu">
-    <button onclick="login()">Đăng nhập</button>
+  <!-- ✅ Đăng nhập -->
+  <div class="section" id="login-section">
+    <div class="login-box">
+      <h2>🔐 Đăng nhập Hoàng Gia</h2>
+      <input type="text" id="username" placeholder="Tên đăng nhập">
+      <input type="password" id="password" placeholder="Mật khẩu">
+      <button onclick="login()">Đăng nhập</button>
+    </div>
   </div>
 
   <script>
-    let dropState = { tram: null, hau: null };
+    let dropState = { tram: '', hau: '' };
 
     function allowDrop(ev) {
       ev.preventDefault();
@@ -140,7 +128,7 @@
       const data = ev.dataTransfer.getData("text");
       const img = document.getElementById(data);
       if (img) {
-        ev.target.innerHTML = '';
+        ev.target.innerHTML = "";
         ev.target.appendChild(img);
         dropState[zone] = img.dataset.name;
       }
@@ -148,47 +136,49 @@
     }
 
     function checkVerify() {
-      if (dropState.tram === 'tram' && dropState.hau === 'hau') {
-        alert("✅ Xác minh thành công! Mời đăng nhập.");
-        document.getElementById("verify-section").style.display = "none";
-        document.getElementById("login-section").style.display = "block";
+      if (dropState.tram === "tram" && dropState.hau === "hau") {
+        alert("✅ Xác minh thành công! Mời Trẫm nhập mật khẩu.");
+        document.getElementById("verify-section").classList.remove("visible");
+        document.getElementById("verify-section").classList.add("section");
+        document.getElementById("login-section").classList.remove("section");
+        document.getElementById("login-section").classList.add("visible");
       } else {
-        alert("⚠️ Vị trí chưa đúng. Hãy thử lại Trẫm nhé!");
+        alert("⚠️ Trẫm chưa thả đúng ảnh vào đúng vị trí!");
       }
     }
 
     function login() {
-      const user = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value.trim();
-      if (user === "khanhthy" && pass === "khanhthy662025") {
+      const u = document.getElementById("username").value.trim();
+      const p = document.getElementById("password").value.trim();
+      if (u === "khanhthy" && p === "khanhthy662025") {
         window.location.href = "https://sites.google.com/view/kangthy/katy";
       } else {
-        alert("Sai rồi, Hoàng thượng!");
+        alert("Mật khẩu sai rồi, Trẫm thử lại đi!");
       }
     }
 
-    // Hình trôi nổi
-    const imageSources = [
+    // 🎈 Hình trái tim bay
+    const floatImages = [
       'https://raw.githubusercontent.com/huukhanh2612/kanthy/refs/heads/main/z6795174974878_a311b7868db33948fa20bf81e8bc23b3.jpg',
       'https://github.com/huukhanh2612/kanthy/blob/main/z6795174980987_4f906b7887c342c6adeb619224eacdff.jpg?raw=true',
       'https://github.com/huukhanh2612/kanthy/blob/main/z6795175031497_1b2ae195c53d75e7a0fc7a5f55252aa8.jpg?raw=true'
     ];
     for (let i = 0; i < 30; i++) {
       const img = document.createElement('img');
-      img.src = imageSources[Math.floor(Math.random() * imageSources.length)];
-      img.classList.add('float-image');
-      img.style.left = Math.random() * 100 + 'vw';
-      img.style.animationDuration = 5 + Math.random() * 10 + 's';
-      img.style.animationDelay = Math.random() * 5 + 's';
-      img.style.zIndex = 0;
+      img.src = floatImages[Math.floor(Math.random() * floatImages.length)];
+      img.classList.add("float-image");
+      img.style.left = Math.random() * 100 + "vw";
+      img.style.animationDuration = (5 + Math.random() * 10) + "s";
+      img.style.animationDelay = Math.random() * 5 + "s";
       document.body.appendChild(img);
     }
 
     window.onload = () => {
-      document.querySelectorAll('.drop-zone').forEach(zone => {
-        zone.ondragleave = e => e.target.classList.remove('over');
+      document.querySelectorAll(".drop-zone").forEach(zone => {
+        zone.ondragleave = e => e.target.classList.remove("over");
       });
     };
   </script>
+
 </body>
 </html>
