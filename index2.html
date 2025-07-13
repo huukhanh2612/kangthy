@@ -231,7 +231,20 @@
    <script>
   const sheetAPI = "https://script.google.com/macros/s/AKfycbwS7LVNgC8rHdzu6Dez3gIelpJ6ednoJGLoqZHhf-wy1sKZYBtqphBPG4PZ2LE2BtKW/exec";
 
-  // Gửi ghi chú vào Google Sheet
+ <!-- Ghi chú tình yêu -->
+<div class="note-container">
+  <h2>📖 Ghi chú tình yêu hôm nay</h2>
+  <input type="text" id="nickname" placeholder="Tên người ghi chú (ví dụ: Trẫm, Hoàng hậu...)">
+  <textarea id="noteText" placeholder="Hôm nay là một ngày đáng nhớ..."></textarea>
+  <button type="button" onclick="addNote()">💌 Lưu ghi chú</button>
+  <div id="noteLog" class="note-log"></div>
+</div>
+
+<script>
+  const sheetAPI = "https://script.google.com/macros/s/AKfycbyAQZEJXF33OKTucOEPO6f_fQXWNR4o0Osb468Mgd14ikl79YhfMuTcmcvpobxn2yXT/exec";
+  const sheetDataAPI = "https://docs.google.com/spreadsheets/d/1UXWqhwt3yp5yRWGYb5tFhcqrsB-MEi-E-3R5dbIxwpQ/gviz/tq?tqx=out:json";
+
+  // Gửi ghi chú vào Google Sheets
   function addNote() {
     const nick = document.getElementById('nickname').value.trim();
     const text = document.getElementById('noteText').value.trim();
@@ -240,41 +253,50 @@
       return;
     }
 
-    const formData = new FormData();
-    formData.append("name", nick);
-    formData.append("note", text);
+    const now = new Date().toLocaleString("vi-VN");
+    const entry = `<div class="note-entry">🖋️ <strong>${nick}</strong> (${now}):<br>${text.replace(/\n/g, "<br>")}<hr></div>`;
+
+    // Hiển thị ngay
+    const log = document.getElementById("noteLog");
+    log.innerHTML = entry + log.innerHTML;
+
+    // Gửi lên Google Sheets
+    const data = {
+      name: nick,
+      note: text
+    };
 
     fetch(sheetAPI, {
       method: "POST",
-      body: formData
+      body: JSON.stringify(data),
     })
     .then(res => res.text())
-    .then(() => {
-      alert("💖 Ghi chú đã được lưu thành công!");
+    .then(msg => {
       document.getElementById('nickname').value = "";
       document.getElementById('noteText').value = "";
-      loadNotes(); // Cập nhật lại ghi chú sau khi thêm
     })
     .catch(err => {
       console.error(err);
-      alert("❌ Lỗi khi gửi ghi chú. Kiểm tra lại kết nối hoặc Apps Script.");
+      alert("❌ Lỗi khi gửi ghi chú. Kiểm tra lại Apps Script hoặc kết nối mạng.");
     });
   }
 
-  // Tải ghi chú từ Google Sheets
+  // Tải ghi chú từ Google Sheet
   function loadNotes() {
-    fetch("https://docs.google.com/spreadsheets/d/1gfiq9GSkd5zCv_xWrg0KpQh3u1YFSkPQ60hzBYAm5eg/gviz/tq?tqx=out:json")
+    fetch(sheetDataAPI)
       .then(res => res.text())
       .then(text => {
         const json = JSON.parse(text.substring(47).slice(0, -2));
         const rows = json.table.rows;
         let html = "";
+
         rows.reverse().forEach(row => {
-          const name = row.c[0]?.v || 'Ẩn danh';
-          const time = row.c[1]?.f || 'Không rõ thời gian';
-          const note = row.c[2]?.v || '';
+          const name = row.c[0]?.v || "Ẩn danh";
+          const time = row.c[1]?.f || "Không rõ";
+          const note = row.c[2]?.v || "";
           html += `<div class="note-entry">🖋️ <strong>${name}</strong> (${time}):<br>${note}<hr></div>`;
         });
+
         document.getElementById("noteLog").innerHTML = html;
       })
       .catch(err => {
@@ -282,6 +304,7 @@
       });
   }
 
+  // Khi trang web tải, tự động hiện ghi chú
   window.onload = loadNotes;
 </script>
 
