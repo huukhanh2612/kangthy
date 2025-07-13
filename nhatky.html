@@ -2,6 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nhật ký tình yêu</title>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand&display=swap" rel="stylesheet">
   <style>
@@ -17,33 +18,31 @@
     h1 {
       font-family: 'Great Vibes', cursive;
       text-align: center;
-      font-size: 10vw;
-      margin: 40px 0 10px;
+      font-size: 12vw;
+      margin: 40px 0 20px;
       color: #d63384;
       text-shadow: 2px 2px 8px rgba(255, 192, 203, 0.6);
     }
 
     #diaryContainer {
-      max-width: 90%;
+      max-width: 95%;
       margin: 0 auto;
-      background: rgba(255, 255, 255, 0.85);
-      padding: 25px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
       border-radius: 20px;
       box-shadow: 0 0 25px rgba(255, 105, 180, 0.3);
       white-space: pre-wrap;
-      min-height: 300px;
-      max-height: 60vh;
+      max-height: 65vh;
       overflow-y: auto;
-      font-size: 1.2rem;
-      line-height: 1.8;
+      font-size: 1.5rem; /* Cỡ chữ lớn hơn */
+      line-height: 2;
       backdrop-filter: blur(10px);
-      animation: fadeIn 2s ease;
     }
 
-    #memoryButton {
+    #memoryButton, #playButton {
       display: block;
-      margin: 30px auto 50px;
-      padding: 15px 30px;
+      margin: 25px auto;
+      padding: 15px 40px;
       font-size: 1.2rem;
       background-color: #ff6f91;
       color: white;
@@ -54,14 +53,9 @@
       transition: all 0.3s ease;
     }
 
-    #memoryButton:hover {
+    #memoryButton:hover, #playButton:hover {
       background-color: #ff3c6f;
       transform: scale(1.05);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     audio {
@@ -75,6 +69,7 @@
   <div id="diaryContainer"></div>
 
   <button id="memoryButton" onclick="window.location.href='https://www.kanthy.click/index2.html'">💫 Kỷ niệm 💫</button>
+  <button id="playButton">🎶 Bật nhạc</button>
 
   <audio id="bgMusic" loop>
     <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
@@ -131,13 +126,18 @@ Và hơn hết, anh yêu em.
       typeText(entries);
     };
 
-    // Phát nhạc khi có tương tác
-    function enableMusicPlayback() {
-      const bgMusic = document.getElementById("bgMusic");
-      bgMusic.play().catch(() => {});
-      document.body.removeEventListener("click", enableMusicPlayback);
-    }
-    document.body.addEventListener("click", enableMusicPlayback);
+    // Bật nhạc bằng nút
+    const bgMusic = document.getElementById("bgMusic");
+    const playButton = document.getElementById("playButton");
+
+    playButton.addEventListener("click", () => {
+      bgMusic.play().then(() => {
+        playButton.innerText = "🎶 Nhạc đang phát";
+        playButton.disabled = true;
+      }).catch(() => {
+        alert("Trình duyệt chặn phát tự động. Hãy thử lại sau.");
+      });
+    });
   </script>
 </body>
 </html>
