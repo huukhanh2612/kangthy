@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Nhật ký tình yêu</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #ffe6f0, #ffc2d1);
+      font-family: 'Segoe UI', 'Quicksand', sans-serif;
+      color: #6b2d5c;
+      padding: 40px;
+      line-height: 1.8;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 3em;
+      margin-bottom: 30px;
+    }
+
+    #diaryContainer {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff0f5;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 182, 193, 0.5);
+      white-space: pre-wrap;
+      min-height: 300px;
+      height: 400px;
+      overflow-y: auto;
+      font-size: 1.1em;
+    }
+
+    #memoryButton {
+      display: block;
+      margin: 30px auto 0;
+      padding: 12px 25px;
+      font-size: 1.1em;
+      background-color: #ffb6c1;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    #memoryButton:hover {
+      background-color: #ff6fa1;
+      transform: scale(1.05);
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>💌 Nhật ký tình yêu 💌</h1>
+
+  <div id="diaryContainer"></div>
+
+ <button id="memoryButton" onclick="window.location.href='https://www.kanthy.click/index2.html'">Kỷ niệm</button>
+
+
+  <!-- Nhạc nền -->
+  <audio autoplay loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    Trình duyệt không hỗ trợ audio.
+  </audio>
+
+  <script>
+    const entries = `
+Chào em.
+
+Hôm nay là ngày 13/7/2025 — cũng là ngày anh hoàn thành món quà nhỏ này, như một kỷ niệm đặc biệt dành riêng cho chúng ta.
+
+Anh mong em có thể dành ít phút thôi, để đọc trọn vẹn những điều anh muốn nói. Những điều từ sâu thẳm trái tim mình, anh viết ra... vì em.
+
+Chúng ta gặp nhau theo cách mà có lẽ không ai ngờ tới. Và cũng vì điều đó, anh hiểu rằng có những lúc chúng mình "chậm thấu hiểu nhau". Anh biết chúng mình đang ở giai đoạn nào – không phải dễ dàng. Nhưng anh luôn tin: dù khó khăn đến mấy, nếu còn thương nhau, mình sẽ cùng vượt qua.
+
+Anh hiểu... em đã từng tủi thân rất nhiều.
+
+Có những khoảnh khắc em muốn hỏi: “Tại sao anh không hiểu em? Tại sao không cảm nhận được những điều em đang cố gắng vì anh, vì chúng mình?”
+
+Anh biết — những nỗ lực đó, em chưa từng dành cho ai. Anh biết và anh trân trọng từng chút một, hơn tất cả mọi thứ trên đời này.
+
+Chỉ là… gần đây, có quá nhiều cảm xúc tiêu cực, những nỗi buồn dồn dập tràn vào mối quan hệ vốn đã mỏi mệt... khiến anh trở nên lý trí đến mức lạnh lùng, đánh giá mọi thứ không còn bằng trái tim nữa.
+
+Anh — Phan Hữu Khánh — thật sự xin lỗi em... vì tất cả những gì đã qua.
+
+Anh biết, mỗi khi cơn giận bùng lên, nó làm mờ đi lý trí, đẩy em ra xa. Nhưng tận sâu bên trong, trái tim anh — vẫn luôn hướng về em.
+
+Cảm ơn em — vì đã đọc đến những dòng này.
+Cảm ơn em — vì đã dành cả sự trẻ con dịu dàng của em để yêu chiều một người như anh.
+Cảm ơn em — vì đã yêu anh nhiều hơn chính những gì anh từng tin mình xứng đáng nhận được.
+Cảm ơn em — vì đã san sẻ với anh cả những gánh nặng về tiền bạc, lặng lẽ mà đầy yêu thương.
+Cảm ơn em — vì đã chấp nhận tranh cãi với cả gia đình, chỉ để giữ lấy anh.
+Cảm ơn em, cảm ơn Thy, cảm ơn tất cả những gì em đã âm thầm hy sinh vì anh.
+
+Anh biết ơn em.
+Anh trân trọng em.
+Và hơn hết, anh yêu em.
+
+— Anh, Phan Hữu Khánh.`;
+
+    const container = document.getElementById("diaryContainer");
+
+    function typeText(text, i = 0) {
+      if (i < text.length) {
+        container.innerHTML += text.charAt(i);
+        container.scrollTop = container.scrollHeight;
+        setTimeout(() => typeText(text, i + 1), 20);
+      }
+    }
+
+    window.onload = () => {
+      typeText(entries);
+    };
+  </script>
+</body>
+</html>
