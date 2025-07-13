@@ -3,52 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <title>Nhật ký tình yêu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand&display=swap" rel="stylesheet">
   <style>
     body {
-      background: linear-gradient(to bottom right, #ffe6f0, #ffc2d1);
-      font-family: 'Segoe UI', 'Quicksand', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #ffe6f0 0%, #ffe9ec 50%, #ffdde9 100%), url('https://i.imgur.com/gG9vLq5.jpg') center/cover no-repeat;
+      background-attachment: fixed;
+      font-family: 'Quicksand', sans-serif;
       color: #6b2d5c;
-      padding: 40px;
-      line-height: 1.8;
     }
 
     h1 {
+      font-family: 'Great Vibes', cursive;
       text-align: center;
-      font-size: 3em;
-      margin-bottom: 30px;
+      font-size: 10vw;
+      margin: 40px 0 10px;
+      color: #d63384;
+      text-shadow: 2px 2px 8px rgba(255, 192, 203, 0.6);
     }
 
     #diaryContainer {
-      max-width: 800px;
+      max-width: 90%;
       margin: 0 auto;
-      background: #fff0f5;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(255, 182, 193, 0.5);
+      background: rgba(255, 255, 255, 0.85);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(255, 105, 180, 0.3);
       white-space: pre-wrap;
       min-height: 300px;
-      height: 400px;
+      max-height: 60vh;
       overflow-y: auto;
-      font-size: 1.1em;
+      font-size: 1.2rem;
+      line-height: 1.8;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 2s ease;
     }
 
     #memoryButton {
       display: block;
-      margin: 30px auto 0;
-      padding: 12px 25px;
-      font-size: 1.1em;
-      background-color: #ffb6c1;
+      margin: 30px auto 50px;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      background-color: #ff6f91;
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 25px;
       cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
     }
 
     #memoryButton:hover {
-      background-color: #ff6fa1;
+      background-color: #ff3c6f;
       transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     audio {
@@ -57,15 +70,13 @@
   </style>
 </head>
 <body>
-  <h1>💌 Nhật ký tình yêu 💌</h1>
+  <h1>Nhật ký tình yêu</h1>
 
   <div id="diaryContainer"></div>
 
- <button id="memoryButton" onclick="window.location.href='https://www.kanthy.click/index2.html'">Kỷ niệm</button>
+  <button id="memoryButton" onclick="window.location.href='https://www.kanthy.click/index2.html'">💫 Kỷ niệm 💫</button>
 
-
-  <!-- Nhạc nền -->
-  <audio autoplay loop>
+  <audio id="bgMusic" loop>
     <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
     Trình duyệt không hỗ trợ audio.
   </audio>
@@ -103,7 +114,8 @@ Anh biết ơn em.
 Anh trân trọng em.
 Và hơn hết, anh yêu em.
 
-— Anh, Phan Hữu Khánh.`;
+— Anh, Phan Hữu Khánh.
+`;
 
     const container = document.getElementById("diaryContainer");
 
@@ -118,6 +130,14 @@ Và hơn hết, anh yêu em.
     window.onload = () => {
       typeText(entries);
     };
+
+    // Phát nhạc khi có tương tác
+    function enableMusicPlayback() {
+      const bgMusic = document.getElementById("bgMusic");
+      bgMusic.play().catch(() => {});
+      document.body.removeEventListener("click", enableMusicPlayback);
+    }
+    document.body.addEventListener("click", enableMusicPlayback);
   </script>
 </body>
 </html>
