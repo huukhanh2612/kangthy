@@ -81,19 +81,21 @@
 
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 15px;
-      max-width: 1000px;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 10px;
+      max-width: 100%;
       margin: 20px auto;
+      padding: 0 10px;
     }
 
     .gallery img {
       width: 100%;
-      height: 160px;
+      height: auto;
+      aspect-ratio: 3 / 4;
       object-fit: cover;
-      border-radius: 10px;
+      border-radius: 12px;
       background: #fff;
-      box-shadow: 0 0 8px rgba(255, 0, 128, 0.15);
+      box-shadow: 0 2px 6px rgba(255, 0, 128, 0.1);
       transition: transform 0.3s ease;
     }
 
@@ -154,16 +156,9 @@
     }
 
     @media (max-width: 480px) {
-      h1 {
-        font-size: 2em;
-      }
-      .slide {
-        font-size: 1em;
-        padding: 15px;
-      }
-      .note-container {
-        padding: 15px;
-      }
+      h1 { font-size: 2em; }
+      .slide { font-size: 1em; padding: 15px; }
+      .note-container { padding: 15px; }
     }
   </style>
 </head>
@@ -171,18 +166,19 @@
   <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/photo_3_2025-06-26_19-11-44.jpg" alt="Hoàng hậu nương nương" class="header-image">
   <h1>Tình Sử Trẫm & Hoàng Hậu</h1>
   <div id="counter">Đang tính thời gian yêu nhau...</div>
+
   <div class="slide active">💌 <strong>Ngày đầu gặp gỡ</strong><br>Anh không nghĩ mình sẽ yêu được em...</div>
   <div class="slide">🌸 <strong>Lần đầu nắm tay</strong><br>Lần chủ động đó anh nghĩ mình đã năm trong tay cả thiên hạ.</div>
   <div class="slide">🌙 <strong>Lời quan tâm</strong><br>Lần quan tâm vu vơ đó anh nghĩ mình sẽ nhớ đến già đầu ...</div>
-  <div class="slide">💍 <strong>Ngày chính thức yêu nhau – 06/06/2025</strong><br>Anh chọn ngày đẹp không phải để dễ nhớ , anh chọn ngày đẹp để mong chuyện tình mình đẹp như ngày .</div>
+  <div class="slide">💍 <strong>Ngày chính thức yêu nhau – 06/06/2025</strong><br>Anh chọn ngày đẹp không phải để dễ nhớ, anh chọn ngày đẹp để mong chuyện tình mình đẹp như ngày.</div>
   <div class="slide">👑 <strong>Cùng nhau qua giông bão</strong><br>Tay trong tay, dù đời có trăm vạn đổi thay.</div>
   <div class="slide">❤️ <strong>Hiện tại</strong><br>Trẫm yêu nàng hơn bao giờ hết. Vĩnh viễn không đổi thay.</div>
+
   <div class="heart">💖</div>
   <div class="hint">(Nhấp vào màn hình để chuyển chương)</div>
+
   <div class="album-title">📷 Hình Ảnh Trẫm & Hoàng Hậu</div>
-  <div class="gallery">
-    <!-- (Danh sách ảnh như cũ) -->
-    <div class="gallery">
+   <div class="gallery">
     <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175004522_c1077cdb44e1775bb5e14f9241bf9960.jpg" alt="Ảnh 1">
     <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175030992_46f34d07c2c3e27efc2dc95bf52e4042.jpg" alt="Ảnh 2">
     <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175031497_1b2ae195c53d75e7a0fc7a5f55252aa8.jpg" alt="Ảnh 3">
@@ -200,8 +196,7 @@
     <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175136647_bdb230df3d32e6645e4141d73aa92ec3.jpg" alt="Ảnh 15">
     <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175137787_07ec7ecd0b5692fe0aaa196127a9482b.jpg" alt="Ảnh 16">
   </div>
-    <!-- Bạn có thể giữ nguyên phần ảnh như bạn đã làm -->
-  </div>
+
   <div class="note-container">
     <h2>📖 Ghi chú tình yêu hôm nay</h2>
     <input type="text" id="nickname" placeholder="Tên người ghi chú (ví dụ: Trẫm, Hoàng hậu...)">
@@ -211,8 +206,8 @@
     <div id="noteLog" class="note-log"></div>
   </div>
 
-  <!-- Nhạc nền nhẹ nhàng -->
-  <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_e8412bf61f.mp3?filename=love-story-12299.mp3" preload="auto" loop></audio>
+  <!-- 🎵 Nhạc nền nhẹ nhàng -->
+  <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2021/10/20/audio_b62b342a9a.mp3?filename=emotional-romantic-piano-115672.mp3" preload="auto" loop></audio>
 
   <script>
     const sheetAPI = "https://script.google.com/macros/s/AKfycbzY87QwdibmLtbm9MvQDMQ4FvZIjLAfkzzO3QwByqTwNOOFqveDbOs-PUH7cBB6xCM5/exec";
@@ -222,7 +217,6 @@
       const nick = document.getElementById('nickname').value.trim();
       const text = document.getElementById('noteText').value.trim();
       if (!nick || !text) return alert("Vui lòng điền cả tên và ghi chú.");
-
       fetch(sheetAPI, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -234,7 +228,7 @@
         document.getElementById('noteText').value = "";
         loadNotes();
       })
-      .catch(err => alert("❌ Gửi thất bại."));
+      .catch(() => alert("❌ Gửi thất bại."));
     }
 
     function loadNotes() {
