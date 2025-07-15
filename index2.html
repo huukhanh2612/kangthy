@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tình Sử Phan Cao</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -21,8 +22,10 @@
     }
 
     h1 {
-      font-size: 2.5em;
+      font-family: 'Great Vibes', cursive;
+      font-size: 3em;
       margin: 20px 0 10px;
+      color: #b30059;
     }
 
     #counter {
@@ -44,10 +47,13 @@
       margin: 0 auto 20px;
       max-width: 700px;
       box-shadow: 0 0 20px rgba(255, 105, 180, 0.2);
+      opacity: 0;
+      transition: opacity 0.5s ease;
     }
 
     .slide.active {
       display: block;
+      opacity: 1;
     }
 
     .heart {
@@ -56,9 +62,9 @@
     }
 
     @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.7; }
-      50% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(1); opacity: 0.7; }
+      0% { transform: scale(1); opacity: 0.7; color: #ff99cc; }
+      50% { transform: scale(1.2); opacity: 1; color: #ff4da6; }
+      100% { transform: scale(1); opacity: 0.7; color: #ff99cc; }
     }
 
     .hint {
@@ -88,6 +94,11 @@
       border-radius: 10px;
       background: #fff;
       box-shadow: 0 0 8px rgba(255, 0, 128, 0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
     }
 
     .note-container {
@@ -141,9 +152,22 @@
       font-size: 0.95em;
       white-space: pre-wrap;
     }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2em;
+      }
+      .slide {
+        font-size: 1em;
+        padding: 15px;
+      }
+      .note-container {
+        padding: 15px;
+      }
+    }
   </style>
 </head>
-<body onclick="nextSlide()">
+<body onclick="nextSlide(); playMusicOnce();">
   <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/photo_3_2025-06-26_19-11-44.jpg" alt="Hoàng hậu nương nương" class="header-image">
   <h1>Tình Sử Trẫm & Hoàng Hậu</h1>
   <div id="counter">Đang tính thời gian yêu nhau...</div>
@@ -157,6 +181,8 @@
   <div class="hint">(Nhấp vào màn hình để chuyển chương)</div>
   <div class="album-title">📷 Hình Ảnh Trẫm & Hoàng Hậu</div>
   <div class="gallery">
+    <!-- (Danh sách ảnh như cũ) -->
+    <div class="gallery">
     <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175004522_c1077cdb44e1775bb5e14f9241bf9960.jpg" alt="Ảnh 1">
     <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175030992_46f34d07c2c3e27efc2dc95bf52e4042.jpg" alt="Ảnh 2">
     <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175031497_1b2ae195c53d75e7a0fc7a5f55252aa8.jpg" alt="Ảnh 3">
@@ -174,6 +200,8 @@
     <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175136647_bdb230df3d32e6645e4141d73aa92ec3.jpg" alt="Ảnh 15">
     <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175137787_07ec7ecd0b5692fe0aaa196127a9482b.jpg" alt="Ảnh 16">
   </div>
+    <!-- Bạn có thể giữ nguyên phần ảnh như bạn đã làm -->
+  </div>
   <div class="note-container">
     <h2>📖 Ghi chú tình yêu hôm nay</h2>
     <input type="text" id="nickname" placeholder="Tên người ghi chú (ví dụ: Trẫm, Hoàng hậu...)">
@@ -182,6 +210,10 @@
     <button type="button" onclick="clearFields()">🧽 Xóa nhập</button>
     <div id="noteLog" class="note-log"></div>
   </div>
+
+  <!-- Nhạc nền nhẹ nhàng -->
+  <audio id="bgMusic" src="https://www.bensound.com/bensound-music/bensound-slowmotion.mp3" preload="auto" loop></audio>
+
   <script>
     const sheetAPI = "https://script.google.com/macros/s/AKfycbzY87QwdibmLtbm9MvQDMQ4FvZIjLAfkzzO3QwByqTwNOOFqveDbOs-PUH7cBB6xCM5/exec";
     const sheetDataAPI = "https://docs.google.com/spreadsheets/d/1UXWqhwt3yp5yRWGYb5tFhcqrsB-MEi-E-3R5dbIxwpQ/gviz/tq?tqx=out:json";
@@ -225,6 +257,7 @@
     function clearFields() {
       document.getElementById('nickname').value = "";
       document.getElementById('noteText').value = "";
+      document.getElementById('nickname').focus();
     }
 
     function updateCounter() {
@@ -243,9 +276,21 @@
     function showSlide(index) {
       slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
     }
+
     function nextSlide() {
       current = (current + 1) % slides.length;
       showSlide(current);
+    }
+
+    let musicPlayed = false;
+    function playMusicOnce() {
+      if (!musicPlayed) {
+        const audio = document.getElementById('bgMusic');
+        audio.play().catch(() => {
+          console.log("Thiết bị chưa cho phép phát nhạc ngay.");
+        });
+        musicPlayed = true;
+      }
     }
 
     setInterval(updateCounter, 1000);
