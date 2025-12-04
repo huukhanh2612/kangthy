@@ -1,105 +1,162 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nhạc Của Kang & Thy</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 { 
-            text-align: center; 
-            color: #2c3e50; 
-            margin-bottom: 30px;
-        }
-        .music-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: transform 0.2s;
-        }
-        .music-card:hover {
-            transform: translateY(-5px);
-        }
-        .song-title {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #d35400;
-            margin-bottom: 5px;
-        }
-        .song-desc {
-            font-size: 0.9em;
-            color: #7f8c8d;
-            margin-bottom: 15px;
-        }
-        audio {
-            width: 100%;
-            outline: none;
-            height: 40px;
-        }
-        .back-btn {
-            display: block;
-            text-align: center;
-            margin-top: 30px;
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .back-btn:hover {
-            background-color: #2980b9;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nhạc Của Kang & Thy</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        padding: 20px;
+        max-width: 500px;
+        margin: auto;
+        color: #fff;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 1.6em;
+        margin-bottom: 25px;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .player {
+        background: rgba(255,255,255,0.25);
+        padding: 25px;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+
+    .title {
+        font-size: 1.4em;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .desc {
+        font-size: 0.9em;
+        opacity: 0.9;
+        margin-bottom: 15px;
+    }
+
+    .controls {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 20px 0;
+    }
+
+    button {
+        background: #ff6f91;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 50px;
+        color: white;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: 0.25s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    button:hover {
+        background: #ff5470;
+        transform: scale(1.08);
+    }
+
+    #progress {
+        width: 100%;
+    }
+
+    .heart-btn {
+        font-size: 1.4em;
+        background: #ff3e6d;
+    }
+
+    a {
+        margin-top: 25px;
+        display: inline-block;
+        color: white;
+        background: rgba(255,255,255,0.25);
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        backdrop-filter: blur(5px);
+    }
+</style>
 </head>
 <body>
 
-    <h1>🎵 Tuyển Tập Nhạc Tự Sáng Tác 🎵</h1>
+<h1>💖 Nhạc Tình Yêu – Kang & Thy 💖</h1>
 
-    <div class="music-card">
-        <div class="song-title">1. Chúng Ta</div>
-        <div class="song-desc">Sáng tác bởi Kang</div>
-        <audio controls>
-            <source src="Chúng ta _.mp3" type="audio/mpeg">
-        </audio>
+<div class="player">
+    <div class="title" id="songTitle">Đang tải...</div>
+    <div class="desc" id="songDesc">...</div>
+
+    <audio id="audio" autoplay></audio>
+
+    <input type="range" id="progress" value="0">
+
+    <div class="controls">
+        <button onclick="prevSong()">⏮️</button>
+        <button class="heart-btn" onclick="togglePlay()">❤️</button>
+        <button onclick="nextSong()">⏭️</button>
     </div>
+</div>
 
-    <div class="music-card">
-        <div class="song-title">2. Còn Ngoại Đâu</div>
-        <div class="song-desc">Một bài hát về gia đình</div>
-        <audio controls>
-            <source src="Còn ngoại đâu _.mp3" type="audio/mpeg">
-        </audio>
-    </div>
+<a href="index.html">← Quay lại</a>
 
-    <div class="music-card">
-        <div class="song-title">3. Quên Ngoại</div>
-        <div class="song-desc">Giai điệu hoài niệm</div>
-        <audio controls>
-            <source src="Quên Ngoại.mp3" type="audio/mpeg">
-        </audio>
-    </div>
+<script>
+    const songs = [
+        { title: "Chúng Ta", desc: "Lyrics:OneKang Artist:BB.A", file: "Chúng ta _.mp3" },
+        { title: "Còn Ngoại Đâu", desc: "Lyrics:OneKang Artist:BB.A", file: "Còn ngoại đâu _.mp3" },
+        { title: "Quên Ngoại", desc: "Lyrics:OneKang Artist:QuânBy", file: "Quên Ngoại.mp3" },
+        { title: "Sao Em Lại Chọn Khó Khăn", desc: "Lyrics:OneKang Artist:ĐạiTo", file: "Sao em lại chọn khó khăn _.mp3" }
+    ];
 
-    <div class="music-card">
-        <div class="song-title">4. Sao Em Lại Chọn Khó Khăn</div>
-        <div class="song-desc">Bản tình ca tâm trạng</div>
-        <audio controls>
-            <source src="Sao em lại chọn khó khăn _.mp3" type="audio/mpeg">
-        </audio>
-    </div>
+    let index = 0;
+    const audio = document.getElementById("audio");
+    const title = document.getElementById("songTitle");
+    const desc = document.getElementById("songDesc");
+    const progress = document.getElementById("progress");
 
-    <a href="index.html" class="back-btn">← Quay lại Trang Chủ</a>
+    function loadSong(i) {
+        const s = songs[i];
+        title.innerText = s.title;
+        desc.innerText = s.desc;
+        audio.src = s.file;
+        audio.play();
+    }
+
+    function togglePlay() {
+        if (audio.paused) audio.play();
+        else audio.pause();
+    }
+
+    function nextSong() {
+        index = (index + 1) % songs.length;
+        loadSong(index);
+    }
+
+    function prevSong() {
+        index = (index - 1 + songs.length) % songs.length;
+        loadSong(index);
+    }
+
+    audio.addEventListener("ended", nextSong);
+
+    audio.addEventListener("timeupdate", () => {
+        progress.value = (audio.currentTime / audio.duration) * 100;
+    });
+
+    progress.addEventListener("input", () => {
+        audio.currentTime = audio.duration * (progress.value / 100);
+    });
+
+    loadSong(index);
+</script>
 
 </body>
 </html>
