@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhạc Của Kang & Thy</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            margin-bottom: 30px;
+        }
+        .music-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+        .music-card:hover {
+            transform: translateY(-5px);
+        }
+        .song-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #d35400;
+            margin-bottom: 5px;
+        }
+        .song-desc {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+        audio {
+            width: 100%;
+            outline: none;
+            height: 40px;
+        }
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .back-btn:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎵 Tuyển Tập Nhạc Tự Sáng Tác 🎵</h1>
+
+    <div class="music-card">
+        <div class="song-title">1. Chúng Ta</div>
+        <div class="song-desc">Sáng tác bởi Kang</div>
+        <audio controls>
+            <source src="Chúng ta _.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <div class="music-card">
+        <div class="song-title">2. Còn Ngoại Đâu</div>
+        <div class="song-desc">Một bài hát về gia đình</div>
+        <audio controls>
+            <source src="Còn ngoại đâu _.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <div class="music-card">
+        <div class="song-title">3. Quên Ngoại</div>
+        <div class="song-desc">Giai điệu hoài niệm</div>
+        <audio controls>
+            <source src="Quên Ngoại.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <div class="music-card">
+        <div class="song-title">4. Sao Em Lại Chọn Khó Khăn</div>
+        <div class="song-desc">Bản tình ca tâm trạng</div>
+        <audio controls>
+            <source src="Sao em lại chọn khó khăn _.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <a href="index.html" class="back-btn">← Quay lại Trang Chủ</a>
+
+</body>
+</html>
