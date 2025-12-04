@@ -3,159 +3,238 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nhạc Của Kang & Thy</title>
+<title>Music Player - Kang & Thy</title>
 
 <style>
     body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #1a1a1a, #3d002f);
         font-family: 'Segoe UI', sans-serif;
-        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-        padding: 20px;
-        max-width: 500px;
-        margin: auto;
-        color: #fff;
-        text-align: center;
-    }
-
-    h1 {
-        font-size: 1.6em;
-        margin-bottom: 25px;
-        text-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-
-    .player {
-        background: rgba(255,255,255,0.25);
-        padding: 25px;
-        border-radius: 20px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-    }
-
-    .title {
-        font-size: 1.4em;
-        font-weight: bold;
-        color: #fff;
-    }
-
-    .desc {
-        font-size: 0.9em;
-        opacity: 0.9;
-        margin-bottom: 15px;
-    }
-
-    .controls {
+        color: white;
+        height: 100vh;
         display: flex;
+        overflow: hidden;
+    }
+
+    /* Vùng trái chứa đĩa + nút điều khiển */
+    .left-panel {
+        width: 65%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
+    }
+
+    /* Đĩa nhạc */
+    .disc-container {
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: url('https://png.pngtree.com/png-vector/20220608/ourmid/pngtree-black-music-disc-with-grooves-png-image_4814597.png') no-repeat center/cover;
+        border: 6px solid #ffb6d9;
+        box-shadow: 0 0 25px #ff7ac4;
+        animation: spin 4s linear infinite;
+        animation-play-state: paused;
+    }
+
+    .playing .disc-container {
+        animation-play-state: running;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    /* Tiêu đề bài hát */
+    .song-title {
+        margin-top: 20px;
+        font-size: 26px;
+        font-weight: bold;
+        text-align: center;
+        color: #ffbde6;
+    }
+
+    .song-desc {
+        font-size: 14px;
+        margin-top: 5px;
+        opacity: 0.8;
+        text-align: center;
+        color: #ffd4ef;
+    }
+
+    /* Nút điều khiển */
+    .controls {
+        margin-top: 30px;
+        display: flex;
         gap: 20px;
-        margin: 20px 0;
     }
 
-    button {
-        background: #ff6f91;
+    .btn {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background: #ff87c9;
         border: none;
-        padding: 12px 18px;
-        border-radius: 50px;
-        color: white;
-        font-size: 1.1em;
+        font-size: 20px;
         cursor: pointer;
-        transition: 0.25s;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        box-shadow: 0 0 15px #ff5bb1;
+        transition: 0.2s;
     }
 
-    button:hover {
-        background: #ff5470;
-        transform: scale(1.08);
+    .btn:hover {
+        transform: scale(1.15);
+        background: #ff4fab;
     }
 
-    #progress {
-        width: 100%;
+    /* Playlist bên phải */
+    .playlist {
+        width: 35%;
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(10px);
+        padding: 25px;
+        overflow-y: auto;
+        height: 100vh;
+        border-left: 2px solid #ff8ccd;
     }
 
-    .heart-btn {
-        font-size: 1.4em;
-        background: #ff3e6d;
+    .playlist h2 {
+        text-align: center;
+        color: #ffbde6;
+        margin-bottom: 20px;
     }
 
-    a {
-        margin-top: 25px;
-        display: inline-block;
-        color: white;
-        background: rgba(255,255,255,0.25);
-        padding: 10px 20px;
-        border-radius: 25px;
-        text-decoration: none;
-        backdrop-filter: blur(5px);
+    .song-item {
+        padding: 12px;
+        margin-bottom: 10px;
+        background: rgba(255, 182, 213, 0.15);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.2s;
     }
+
+    .song-item:hover {
+        background: rgba(255, 182, 213, 0.35);
+    }
+
+    .active {
+        background: #ff7cc2 !important;
+    }
+
+    .song-name {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .song-info {
+        opacity: 0.7;
+        font-size: 13px;
+        margin-top: 3px;
+    }
+
 </style>
 </head>
+
 <body>
 
-<h1>💖 Nhạc Tình Yêu – Kang & Thy 💖</h1>
+<!-- LEFT PANEL -->
+<div class="left-panel" id="playerArea">
 
-<div class="player">
-    <div class="title" id="songTitle">Đang tải...</div>
-    <div class="desc" id="songDesc">...</div>
+    <div class="disc-container" id="disc"></div>
 
-    <audio id="audio" autoplay></audio>
-
-    <input type="range" id="progress" value="0">
+    <div class="song-title" id="songTitle">Đang tải...</div>
+    <div class="song-desc" id="songDesc"></div>
 
     <div class="controls">
-        <button onclick="prevSong()">⏮️</button>
-        <button class="heart-btn" onclick="togglePlay()">❤️</button>
-        <button onclick="nextSong()">⏭️</button>
+        <button class="btn" id="prevBtn">⏮</button>
+        <button class="btn" id="playBtn">▶️</button>
+        <button class="btn" id="nextBtn">⏭</button>
     </div>
+
 </div>
 
-<a href="index.html">← Quay lại</a>
+<!-- RIGHT PANEL PLAYLIST -->
+<div class="playlist" id="playlist">
+    <h2>Danh Sách Bài Hát</h2>
+</div>
+
+<audio id="audio"></audio>
 
 <script>
-    const songs = [
-        { title: "Chúng Ta", desc: "Lyrics:OneKang Artist:BB.A", file: "Chúng ta _.mp3" },
-        { title: "Còn Ngoại Đâu", desc: "Lyrics:OneKang Artist:BB.A", file: "Còn ngoại đâu _.mp3" },
-        { title: "Quên Ngoại", desc: "Lyrics:OneKang Artist:QuânBy", file: "Quên Ngoại.mp3" },
-        { title: "Sao Em Lại Chọn Khó Khăn", desc: "Lyrics:OneKang Artist:ĐạiTo", file: "Sao em lại chọn khó khăn _.mp3" }
-    ];
+const songs = [
+    { title: "Chúng Ta", desc: "Lyrics: OneKang • Artist: BB.A", file: "Chúng ta _.mp3" },
+    { title: "Còn Ngoại Đâu", desc: "Lyrics: OneKang • Artist: BB.A", file: "Còn ngoại đâu _.mp3" },
+    { title: "Quên Ngoại", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Quên Ngoại.mp3" },
+    { title: "Sao Em Lại Chọn Khó Khăn", desc: "Lyrics: OneKang • Artist: ĐạiTo", file: "Sao em lại chọn khó khăn _.mp3" }
+];
 
-    let index = 0;
-    const audio = document.getElementById("audio");
-    const title = document.getElementById("songTitle");
-    const desc = document.getElementById("songDesc");
-    const progress = document.getElementById("progress");
+let currentSong = 0;
 
-    function loadSong(i) {
-        const s = songs[i];
-        title.innerText = s.title;
-        desc.innerText = s.desc;
-        audio.src = s.file;
+const audio = document.getElementById("audio");
+const songTitle = document.getElementById("songTitle");
+const songDesc = document.getElementById("songDesc");
+const playerArea = document.getElementById("playerArea");
+const playlistEl = document.getElementById("playlist");
+
+function loadSong(index) {
+    currentSong = index;
+    audio.src = songs[index].file;
+    songTitle.textContent = songs[index].title;
+    songDesc.textContent = songs[index].desc;
+    audio.play();
+    playerArea.classList.add("playing");
+    updatePlaylist();
+}
+
+function updatePlaylist() {
+    document.querySelectorAll(".song-item").forEach((item, i) => {
+        item.classList.toggle("active", i === currentSong);
+    });
+}
+
+// Render playlist
+songs.forEach((song, i) => {
+    const div = document.createElement("div");
+    div.className = "song-item";
+    div.innerHTML = `
+        <div class="song-name">${song.title}</div>
+        <div class="song-info">${song.desc}</div>
+    `;
+    div.onclick = () => loadSong(i);
+    playlistEl.appendChild(div);
+});
+
+// Buttons
+document.getElementById("playBtn").onclick = () => {
+    if (audio.paused) {
         audio.play();
+        playerArea.classList.add("playing");
+    } else {
+        audio.pause();
+        playerArea.classList.remove("playing");
     }
+};
 
-    function togglePlay() {
-        if (audio.paused) audio.play();
-        else audio.pause();
-    }
+document.getElementById("nextBtn").onclick = () => {
+    currentSong = (currentSong + 1) % songs.length;
+    loadSong(currentSong);
+};
 
-    function nextSong() {
-        index = (index + 1) % songs.length;
-        loadSong(index);
-    }
+document.getElementById("prevBtn").onclick = () => {
+    currentSong = (currentSong - 1 + songs.length) % songs.length;
+    loadSong(currentSong);
+};
 
-    function prevSong() {
-        index = (index - 1 + songs.length) % songs.length;
-        loadSong(index);
-    }
+// Tự chuyển bài
+audio.onended = () => {
+    currentSong = (currentSong + 1) % songs.length;
+    loadSong(currentSong);
+};
 
-    audio.addEventListener("ended", nextSong);
+// Tự động phát bài đầu tiên
+loadSong(0);
 
-    audio.addEventListener("timeupdate", () => {
-        progress.value = (audio.currentTime / audio.duration) * 100;
-    });
-
-    progress.addEventListener("input", () => {
-        audio.currentTime = audio.duration * (progress.value / 100);
-    });
-
-    loadSong(index);
 </script>
 
 </body>
