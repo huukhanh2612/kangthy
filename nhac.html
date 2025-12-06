@@ -64,9 +64,41 @@
         color: #ffd4ef;
     }
 
+    /* --- CSS CHO PROGRESS BAR MỚI --- */
+    .progress-container {
+        width: 70%; /* Chiều rộng tương đối với left-panel */
+        max-width: 400px;
+        margin-top: 30px;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .progress {
+        height: 100%;
+        width: 0%;
+        background: #ff4fab;
+        border-radius: 4px;
+        transition: width 0.1s linear; /* Hiệu ứng mượt khi tiến trình chạy */
+    }
+
+    .time-display {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        font-size: 12px;
+        opacity: 0.7;
+    }
+    /* --- HẾT CSS CHO PROGRESS BAR MỚI --- */
+
     /* Nút điều khiển */
     .controls {
-        margin-top: 30px;
+        margin-top: 20px; /* Giảm margin để dồn lên gần progress bar */
         display: flex;
         gap: 20px;
     }
@@ -152,7 +184,16 @@
 
     <div class="song-title" id="songTitle">Đang tải...</div>
     <div class="song-desc" id="songDesc"></div>
-
+    
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div class="time-display">
+            <span id="currentTime">0:00</span>
+            <span id="durationTime">0:00</span>
+        </div>
+    </div>
     <div class="controls">
         <button class="btn" id="prevBtn">⏮</button>
         <button class="btn" id="playBtn">▶️</button>
@@ -197,6 +238,20 @@ const songDesc = document.getElementById("songDesc");
 const playerArea = document.getElementById("playerArea");
 const playlistEl = document.getElementById("playlist");
 
+// *** KHAI BÁO CÁC PHẦN TỬ MỚI ***
+const progressBar = document.getElementById("progressBar");
+const progress = document.getElementById("progress");
+const currentTimeEl = document.getElementById("currentTime");
+const durationTimeEl = document.getElementById("durationTime");
+
+// --- HÀM HỖ TRỢ ĐỊNH DẠNG THỜI GIAN ---
+function formatTime(seconds) {
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60);
+    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+}
+// ------------------------------------
+
 // Hàm lọc bài hát theo tiêu đề hoặc tác giả (Giữ nguyên)
 function filterSongs() {
     const input = document.getElementById("searchInput").value.toLowerCase();
@@ -217,9 +272,7 @@ function filterSongs() {
 // *** HÀM MỚI: Tăng lượt nghe ***
 function incrementPlayCount(index) {
     if (songs[index]) {
-        // Tăng lượt nghe trong bộ nhớ (Lưu ý: Để lưu trữ vĩnh viễn cần dùng LocalStorage)
         songs[index].playCount = (songs[index].playCount || 0) + 1;
-        // Cập nhật lại giao diện playlist sau khi tăng
         updatePlaylistDisplay();
     }
 }
@@ -242,16 +295,13 @@ function updatePlaylist() {
 
 // *** HÀM MỚI: Cập nhật lại giao diện playlist (Tách ra từ hàm render) ***
 function updatePlaylistDisplay() {
-    // Xóa nội dung playlist hiện tại (trừ tiêu đề và ô tìm kiếm)
     const existingItems = document.querySelectorAll(".song-item");
     existingItems.forEach(item => item.remove());
 
-    // Render lại playlist với dữ liệu mới (đã bao gồm playCount mới)
     songs.forEach((song, i) => {
         const div = document.createElement("div");
         div.className = "song-item";
         
-        // Thêm thẻ hiển thị Lượt Nghe (song-stats)
         div.innerHTML = `
             <div class="song-name">${song.title}</div>
             <div class="song-info">${song.desc}</div>
@@ -262,34 +312,29 @@ function updatePlaylistDisplay() {
         playlistEl.appendChild(div);
     });
 
-    // Sau khi render xong, đảm bảo bài đang phát được đánh dấu
     updatePlaylist(); 
-    
-    // Giữ lại bộ lọc nếu người dùng đang tìm kiếm
     filterSongs();
 }
 
 
-// *** CHỈNH SỬA: Thay thế hàm render playlist cũ bằng hàm mới ***
-// Xóa dòng 'songs.forEach((song, i) => {...});' cũ
-// Và gọi hàm mới để render lần đầu tiên:
 updatePlaylistDisplay(); 
 
 
 // Buttons (Giữ nguyên)
 document.getElementById("playBtn").onclick = () => {
+    const playBtn = document.getElementById("playBtn");
     if (audio.paused) {
         audio.play();
         playerArea.classList.add("playing");
+        playBtn.textContent = '⏸️'; // Thay đổi icon thành Pause
     } else {
         audio.pause();
         playerArea.classList.remove("playing");
+        playBtn.textContent = '▶️'; // Thay đổi icon thành Play
     }
 };
 
 document.getElementById("nextBtn").onclick = () => {
-    // Thêm logic nếu bài đang phát chưa hết mà chuyển bài
-    // Dù không chính xác hoàn toàn nhưng là cách đơn giản để ghi nhận chuyển bài
     if (!audio.paused) incrementPlayCount(currentSong); 
     
     currentSong = (currentSong + 1) % songs.length;
@@ -297,24 +342,52 @@ document.getElementById("nextBtn").onclick = () => {
 };
 
 document.getElementById("prevBtn").onclick = () => {
-    // Thêm logic nếu bài đang phát chưa hết mà chuyển bài
     if (!audio.paused) incrementPlayCount(currentSong);
     
     currentSong = (currentSong - 1 + songs.length) % songs.length;
     loadSong(currentSong);
 };
 
-// *** CHỈNH SỬA: Tự chuyển bài và tăng lượt nghe khi bài hát kết thúc ***
+// *** LOGIC CHO THANH TIẾN TRÌNH ***
+
+// 1. Cập nhật thời gian và thanh tiến trình theo thời gian thực
+audio.ontimeupdate = function() {
+    const duration = audio.duration;
+    const currentTime = audio.currentTime;
+    
+    // Tính phần trăm tiến trình
+    if (duration > 0) {
+        const progressPercent = (currentTime / duration) * 100;
+        progress.style.width = progressPercent + '%';
+        currentTimeEl.textContent = formatTime(currentTime);
+    }
+};
+
+// 2. Hiển thị tổng thời gian khi bài hát sẵn sàng
+audio.onloadedmetadata = function() {
+    durationTimeEl.textContent = formatTime(audio.duration);
+};
+
+// 3. Cho phép tua bài hát khi click vào thanh progress
+progressBar.onclick = function(e) {
+    const width = this.clientWidth; // Tổng chiều rộng thanh progress
+    const clickX = e.offsetX; // Vị trí click trên thanh
+    const duration = audio.duration;
+    
+    // Tính thời gian mới và cập nhật
+    audio.currentTime = (clickX / width) * duration;
+};
+
+
+// Tự chuyển bài và tăng lượt nghe khi bài hát kết thúc
 audio.onended = () => {
-    // Tăng lượt nghe khi bài hát hiện tại kết thúc
     incrementPlayCount(currentSong); 
     
-    // Chuyển sang bài tiếp theo
     currentSong = (currentSong + 1) % songs.length;
     loadSong(currentSong);
 };
 
-// Tự động phát bài đầu tiên (Giữ nguyên)
+// Tự động phát bài đầu tiên
 loadSong(0);
 
 </script>
