@@ -24,6 +24,12 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        transition: width 0.3s ease;
+    }
+    
+    /* Khi playlist bị ẩn, left-panel chiếm toàn bộ chiều rộng */
+    .left-panel.full-width {
+        width: 100%; 
     }
 
     /* Đĩa nhạc */
@@ -31,11 +37,17 @@
         width: 260px;
         height: 260px;
         border-radius: 50%;
-        background: url('https://raw.githubusercontent.com/huukhanh2612/kangthy/ee11147f7324130dfdae739dea2204f5c7f63917/diaquay.jpg') no-repeat center/cover;
+        /* LƯU Ý QUAN TRỌNG: Đã xóa URL ảnh nền cố định khỏi CSS */
+        background-color: #333; /* Màu nền dự phòng */
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
         border: 6px solid #ffb6d9;
         box-shadow: 0 0 25px #ff7ac4;
         animation: spin 4s linear infinite;
         animation-play-state: paused;
+        /* THÊM: Để chuyển đổi ảnh bìa có hiệu ứng mềm mại hơn */
+        transition: background-image 0.5s ease; 
     }
 
     .playing .disc-container {
@@ -64,9 +76,9 @@
         color: #ffd4ef;
     }
 
-    /* --- CSS CHO PROGRESS BAR MỚI --- */
+    /* CSS CHO PROGRESS BAR */
     .progress-container {
-        width: 70%; /* Chiều rộng tương đối với left-panel */
+        width: 70%; 
         max-width: 400px;
         margin-top: 30px;
     }
@@ -84,7 +96,7 @@
         width: 0%;
         background: #ff4fab;
         border-radius: 4px;
-        transition: width 0.1s linear; /* Hiệu ứng mượt khi tiến trình chạy */
+        transition: width 0.1s linear;
     }
 
     .time-display {
@@ -94,13 +106,13 @@
         font-size: 12px;
         opacity: 0.7;
     }
-    /* --- HẾT CSS CHO PROGRESS BAR MỚI --- */
-
+    
     /* Nút điều khiển */
     .controls {
-        margin-top: 20px; /* Giảm margin để dồn lên gần progress bar */
+        margin-top: 20px; 
         display: flex;
         gap: 20px;
+        align-items: center; 
     }
 
     .btn {
@@ -115,20 +127,47 @@
         transition: 0.2s;
     }
 
+    #playBtn {
+        width: 70px; 
+        height: 70px;
+        font-size: 28px;
+    }
+    
+    #shuffleBtn {
+        background: #ff4fab; 
+        box-shadow: 0 0 15px #ff4fab;
+        font-size: 24px;
+    }
+
     .btn:hover {
         transform: scale(1.15);
         background: #ff4fab;
+    }
+    
+    #shuffleBtn:hover {
+        background: #ff3399; 
     }
 
     /* Playlist bên phải */
     .playlist {
         width: 35%;
+        max-width: 400px; 
         background: rgba(255, 255, 255, 0.06);
         backdrop-filter: blur(10px);
         padding: 25px;
         overflow-y: auto;
         height: 100vh;
         border-left: 2px solid #ff8ccd;
+        transition: transform 0.3s ease, width 0.3s ease;
+    }
+    
+    /* Trạng thái ẩn của Playlist */
+    .playlist.hidden {
+        transform: translateX(100%); 
+        width: 0;
+        padding: 0;
+        border-left: none;
+        min-width: 0;
     }
 
     .playlist h2 {
@@ -172,6 +211,32 @@
         font-size: 13px;
         margin-top: 3px;
     }
+    
+    /* Nút ẩn/hiện */
+    #togglePlaylistBtn {
+        position: absolute;
+        top: 20px;
+        right: 20px; 
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: #ff87c9;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        box-shadow: 0 0 10px #ff5bb1;
+        transition: 0.2s;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    #togglePlaylistBtn:hover {
+        transform: scale(1.1);
+        background: #ff4fab;
+    }
 
 </style>
 </head>
@@ -179,6 +244,7 @@
 <body>
 
 <div class="left-panel" id="playerArea">
+    <button id="togglePlaylistBtn">☰</button> 
 
     <div class="disc-container" id="disc"></div>
 
@@ -196,6 +262,7 @@
     </div>
     <div class="controls">
         <button class="btn" id="prevBtn">⏮</button>
+        <button class="btn" id="shuffleBtn">🔀</button>
         <button class="btn" id="playBtn">▶️</button>
         <button class="btn" id="nextBtn">⏭</button>
     </div>
@@ -219,15 +286,19 @@
 <audio id="audio"></audio>
 
 <script>
-// *** DỮ LIỆU ĐÃ CẬP NHẬT THÊM TRƯỜNG PLAYCOUNT ***
-const songs = [
-    { title: "Chúng Ta", desc: "Lyrics: OneKang • Artist: BB.A", file: "Chúng ta _.mp3", playCount: 15 },
-    { title: "Xuôi Theo Dòng", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Xuôi theo sông.mp3", playCount: 8 },
-    { title: "Kéo Anh Tôi Ra", desc: "Lyrics: OneKang • Artist: Rick", file: "Kéo Anh Tôi Ra.mp3", playCount: 22 },
-    { title: "Chạy Khỏi Tao", desc: "Lyrics: OneKang • Artist: Bảo Black", file: "Chạy khỏi tao.mp3", playCount: 10 },
-    { title: "Còn Ngoại Đâu", desc: "Lyrics: OneKang • Artist: BB.A", file: "Còn ngoại đâu _.mp3", playCount: 5 },
-    { title: "Quên Ngoại", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Quên Ngoại.mp3", playCount: 12 },
-    { title: "Sao Em Lại Chọn Khó Khăn", desc: "Lyrics: OneKang • Artist: ĐạiTo", file: "Sao em lại chọn khó khăn _.mp3", playCount: 18 }
+// *** KHAI BÁO DỮ LIỆU GỐC VÀ THIẾT LẬP LƯU TRỮ CỤC BỘ ***
+const STORAGE_KEY = 'kangthy_music_playlist';
+
+// Dữ liệu gốc (ĐÃ THÊM TRƯỜNG 'cover')
+// LƯU Ý: Vui lòng thay thế 'url_anh_mac_dinh.jpg' và các URL cover khác bằng ảnh của bạn.
+let songs = [
+    { title: "Chúng Ta", desc: "Lyrics: OneKang • Artist: BB.A", file: "Chúng ta _.mp3", playCount: 6.6225, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/IMG_5366.JPG" }, 
+    { title: "Xuôi Theo Dòng", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Xuôi theo sông.mp3", playCount: 1.123, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/ee11147f7324130dfdae739dea2204f5c7f63917/diaquay.jpg" },
+    { title: "Kéo Anh Tôi Ra", desc: "Lyrics: OneKang • Artist: Rick", file: "Kéo Anh Tôi Ra.mp3", playCount: 2.124, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/8f816a23e19e9041c7cf71b11a907a864c34c03e/photo_2025-03-04_18-40-42.jpg" },
+    { title: "Chạy Khỏi Tao", desc: "Lyrics: OneKang • Artist: Bảo Black", file: "Chạy khỏi tao.mp3", playCount: 3.329, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/ee11147f7324130dfdae739dea2204f5c7f63917/diaquay.jpg" },
+    { title: "Còn Ngoại Đâu", desc: "Lyrics: OneKang • Artist: BB.A", file: "Còn ngoại đâu _.mp3", playCount: 6.442, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/z7280227127599_19b782c2166dab57ad1468f645d2f276.jpg" },
+    { title: "Quên Ngoại", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Quên Ngoại.mp3", playCount: 4.244, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/z7280227127599_19b782c2166dab57ad1468f645d2f276.jpg" },
+    { title: "Sao Em Lại Chọn Khó Khăn", desc: "Lyrics: OneKang • Artist: ĐạiTo", file: "Sao em lại chọn khó khăn _.mp3", playCount: 6.122, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/IMG_5366.JPG" }
 ];
 
 let currentSong = 0;
@@ -237,12 +308,18 @@ const songTitle = document.getElementById("songTitle");
 const songDesc = document.getElementById("songDesc");
 const playerArea = document.getElementById("playerArea");
 const playlistEl = document.getElementById("playlist");
+const playBtn = document.getElementById("playBtn");
+// KHAI BÁO DISC MỚI
+const discEl = document.getElementById("disc"); 
 
-// *** KHAI BÁO CÁC PHẦN TỬ MỚI ***
 const progressBar = document.getElementById("progressBar");
 const progress = document.getElementById("progress");
 const currentTimeEl = document.getElementById("currentTime");
 const durationTimeEl = document.getElementById("durationTime");
+
+const togglePlaylistBtn = document.getElementById("togglePlaylistBtn");
+const shuffleBtn = document.getElementById("shuffleBtn"); 
+
 
 // --- HÀM HỖ TRỢ ĐỊNH DẠNG THỜI GIAN ---
 function formatTime(seconds) {
@@ -251,6 +328,31 @@ function formatTime(seconds) {
     return `${min}:${sec < 10 ? '0' : ''}${sec}`;
 }
 // ------------------------------------
+
+// --- LOGIC LƯU TRỮ LOCAL STORAGE CHO LƯỢT NGHE (Giữ nguyên) ---
+function loadSongsFromStorage() {
+    const storedData = localStorage.getItem(STORAGE_KEY);
+    if (storedData) {
+        const storedSongs = JSON.parse(storedData);
+        songs = songs.map(defaultSong => {
+            const storedSong = storedSongs.find(s => s.title === defaultSong.title);
+            if (storedSong) {
+                // Giữ lại cover mặc định nếu không có trong storage
+                return { ...defaultSong, playCount: storedSong.playCount };
+            }
+            return defaultSong;
+        });
+    }
+}
+
+function saveSongsToStorage() {
+    const dataToStore = songs.map(song => ({
+        title: song.title,
+        playCount: song.playCount
+    }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToStore));
+}
+// --------------------------------------------------
 
 // Hàm lọc bài hát theo tiêu đề hoặc tác giả (Giữ nguyên)
 function filterSongs() {
@@ -269,20 +371,37 @@ function filterSongs() {
     });
 }
 
-// *** HÀM MỚI: Tăng lượt nghe ***
+// Tăng lượt nghe và lưu trữ (Giữ nguyên)
 function incrementPlayCount(index) {
     if (songs[index]) {
-        songs[index].playCount = (songs[index].playCount || 0) + 1;
-        updatePlaylistDisplay();
+        // Làm tròn lượt nghe thành số nguyên trước khi lưu
+        songs[index].playCount = Math.round((songs[index].playCount || 0) + 1); 
+        saveSongsToStorage(); 
+        updatePlaylistDisplay(); 
     }
 }
 
 function loadSong(index) {
     currentSong = index;
-    audio.src = songs[index].file;
-    songTitle.textContent = songs[index].title;
-    songDesc.textContent = songs[index].desc;
-    audio.play();
+    const songData = songs[index];
+    
+    // CẬP NHẬT QUAN TRỌNG: Thay đổi ảnh nền của đĩa quay
+    discEl.style.backgroundImage = `url('${songData.cover}')`;
+    
+    audio.src = songData.file;
+    songTitle.textContent = songData.title;
+    songDesc.textContent = songData.desc;
+    
+    // Đảm bảo nút play được cập nhật đúng icon
+    if (!audio.paused) {
+        audio.play(); 
+        playBtn.textContent = '⏸️'; 
+    } else {
+        // Tự động phát khi chuyển bài
+        audio.play(); 
+        playBtn.textContent = '⏸️'; 
+    }
+
     playerArea.classList.add("playing");
     updatePlaylist();
 }
@@ -293,19 +412,22 @@ function updatePlaylist() {
     });
 }
 
-// *** HÀM MỚI: Cập nhật lại giao diện playlist (Tách ra từ hàm render) ***
+// Cập nhật lại giao diện playlist (Giữ nguyên)
 function updatePlaylistDisplay() {
-    const existingItems = document.querySelectorAll(".song-item");
-    existingItems.forEach(item => item.remove());
+    const songItemsToRemove = document.querySelectorAll("#playlist .song-item");
+    songItemsToRemove.forEach(item => item.remove());
 
     songs.forEach((song, i) => {
         const div = document.createElement("div");
         div.className = "song-item";
         
+        // Làm tròn playCount khi hiển thị
+        const roundedPlayCount = Math.round(song.playCount || 0); 
+
         div.innerHTML = `
             <div class="song-name">${song.title}</div>
             <div class="song-info">${song.desc}</div>
-            <div class="song-stats">Lượt nghe: ${song.playCount}</div>
+            <div class="song-stats">Lượt nghe: ${roundedPlayCount}</div>
         `;
         
         div.onclick = () => loadSong(i);
@@ -316,46 +438,70 @@ function updatePlaylistDisplay() {
     filterSongs();
 }
 
+// LOGIC CHO NÚT ẨN/HIỆN PLAYLIST (Giữ nguyên)
+togglePlaylistBtn.onclick = () => {
+    playlistEl.classList.toggle('hidden');
+    playerArea.classList.toggle('full-width');
+    
+    if (playlistEl.classList.contains('hidden')) {
+        togglePlaylistBtn.innerHTML = '▶️'; 
+    } else {
+        togglePlaylistBtn.innerHTML = '☰'; 
+    }
+};
 
-updatePlaylistDisplay(); 
+// LOGIC TRỘN BÀI (SHUFFLE) (Giữ nguyên)
+function shuffleSongs() {
+    for (let i = songs.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [songs[i], songs[j]] = [songs[j], songs[i]];
+    }
+    loadSong(0); 
+    updatePlaylistDisplay(); 
+}
 
+// Bấm nút Trộn bài
+shuffleBtn.onclick = () => {
+    if (!audio.paused) incrementPlayCount(currentSong); 
+    shuffleSongs();
+};
+// --------------------------------------
+
+// --- Khởi tạo và Buttons ---
+
+loadSongsFromStorage(); 
+shuffleSongs(); // Tự động trộn bài và load bài đầu tiên khi tải trang
 
 // Buttons (Giữ nguyên)
-document.getElementById("playBtn").onclick = () => {
-    const playBtn = document.getElementById("playBtn");
+playBtn.onclick = () => {
     if (audio.paused) {
         audio.play();
         playerArea.classList.add("playing");
-        playBtn.textContent = '⏸️'; // Thay đổi icon thành Pause
+        playBtn.textContent = '⏸️';
     } else {
         audio.pause();
         playerArea.classList.remove("playing");
-        playBtn.textContent = '▶️'; // Thay đổi icon thành Play
+        playBtn.textContent = '▶️';
     }
 };
 
 document.getElementById("nextBtn").onclick = () => {
     if (!audio.paused) incrementPlayCount(currentSong); 
-    
     currentSong = (currentSong + 1) % songs.length;
     loadSong(currentSong);
 };
 
 document.getElementById("prevBtn").onclick = () => {
     if (!audio.paused) incrementPlayCount(currentSong);
-    
     currentSong = (currentSong - 1 + songs.length) % songs.length;
     loadSong(currentSong);
 };
 
-// *** LOGIC CHO THANH TIẾN TRÌNH ***
-
-// 1. Cập nhật thời gian và thanh tiến trình theo thời gian thực
+// *** LOGIC CHO THANH TIẾN TRÌNH (Giữ nguyên) ***
 audio.ontimeupdate = function() {
     const duration = audio.duration;
     const currentTime = audio.currentTime;
     
-    // Tính phần trăm tiến trình
     if (duration > 0) {
         const progressPercent = (currentTime / duration) * 100;
         progress.style.width = progressPercent + '%';
@@ -363,18 +509,15 @@ audio.ontimeupdate = function() {
     }
 };
 
-// 2. Hiển thị tổng thời gian khi bài hát sẵn sàng
 audio.onloadedmetadata = function() {
     durationTimeEl.textContent = formatTime(audio.duration);
 };
 
-// 3. Cho phép tua bài hát khi click vào thanh progress
 progressBar.onclick = function(e) {
-    const width = this.clientWidth; // Tổng chiều rộng thanh progress
-    const clickX = e.offsetX; // Vị trí click trên thanh
+    const width = this.clientWidth; 
+    const clickX = e.offsetX; 
     const duration = audio.duration;
     
-    // Tính thời gian mới và cập nhật
     audio.currentTime = (clickX / width) * duration;
 };
 
@@ -382,14 +525,9 @@ progressBar.onclick = function(e) {
 // Tự chuyển bài và tăng lượt nghe khi bài hát kết thúc
 audio.onended = () => {
     incrementPlayCount(currentSong); 
-    
     currentSong = (currentSong + 1) % songs.length;
     loadSong(currentSong);
 };
-
-// Tự động phát bài đầu tiên
-loadSong(0);
-
 </script>
 
 </body>
