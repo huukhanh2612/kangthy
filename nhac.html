@@ -138,7 +138,6 @@
 
 <body>
 
-<!-- LEFT PANEL -->
 <div class="left-panel" id="playerArea">
 
     <div class="disc-container" id="disc"></div>
@@ -154,9 +153,18 @@
 
 </div>
 
-<!-- RIGHT PANEL PLAYLIST -->
 <div class="playlist" id="playlist">
     <h2>Danh Sách Bài Hát</h2>
+    <input type="text" id="searchInput" placeholder="Tìm kiếm tên bài hát hoặc tác giả..." onkeyup="filterSongs()" style="
+        width: 95%; 
+        padding: 10px; 
+        margin-bottom: 20px; 
+        border: none; 
+        border-radius: 5px; 
+        background: rgba(255, 255, 255, 0.1); 
+        color: white; 
+        font-size: 14px;
+    ">
 </div>
 
 <audio id="audio"></audio>
@@ -179,6 +187,24 @@ const songTitle = document.getElementById("songTitle");
 const songDesc = document.getElementById("songDesc");
 const playerArea = document.getElementById("playerArea");
 const playlistEl = document.getElementById("playlist");
+
+// Hàm lọc bài hát theo tiêu đề hoặc tác giả (Hàm mới được thêm)
+function filterSongs() {
+    const input = document.getElementById("searchInput").value.toLowerCase();
+    const songItems = document.querySelectorAll(".song-item");
+
+    songItems.forEach((item, index) => {
+        const songData = songs[index];
+        // Lấy tiêu đề và mô tả (desc) để tìm kiếm
+        const textToSearch = (songData.title + " " + songData.desc).toLowerCase();
+
+        if (textToSearch.includes(input)) {
+            item.style.display = ""; // Hiển thị
+        } else {
+            item.style.display = "none"; // Ẩn
+        }
+    });
+}
 
 function loadSong(index) {
     currentSong = index;
