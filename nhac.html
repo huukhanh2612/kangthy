@@ -126,6 +126,14 @@
         font-size: 16px;
         font-weight: bold;
     }
+    
+    /* Thêm style cho lượt nghe */
+    .song-stats {
+        opacity: 0.9;
+        font-size: 12px;
+        margin-top: 5px;
+        color: #ff91c7;
+    }
 
     .song-info {
         opacity: 0.7;
@@ -170,14 +178,15 @@
 <audio id="audio"></audio>
 
 <script>
+// *** DỮ LIỆU ĐÃ CẬP NHẬT THÊM TRƯỜNG PLAYCOUNT ***
 const songs = [
-    { title: "Chúng Ta", desc: "Lyrics: OneKang • Artist: BB.A", file: "Chúng ta _.mp3" },
-    { title: "Xuôi Theo Dòng", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Xuôi theo sông.mp3" },
-    { title: "Kéo Anh Tôi Ra", desc: "Lyrics: OneKang • Artist: Rick", file: "Kéo Anh Tôi Ra.mp3" },
-    { title: "Chạy Khỏi Tao", desc: "Lyrics: OneKang • Artist: Bảo Black", file: "Chạy khỏi tao.mp3" },
-    { title: "Còn Ngoại Đâu", desc: "Lyrics: OneKang • Artist: BB.A", file: "Còn ngoại đâu _.mp3" },
-    { title: "Quên Ngoại", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Quên Ngoại.mp3" },
-    { title: "Sao Em Lại Chọn Khó Khăn", desc: "Lyrics: OneKang • Artist: ĐạiTo", file: "Sao em lại chọn khó khăn _.mp3" }
+    { title: "Chúng Ta", desc: "Lyrics: OneKang • Artist: BB.A", file: "Chúng ta _.mp3", playCount: 15 },
+    { title: "Xuôi Theo Dòng", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Xuôi theo sông.mp3", playCount: 8 },
+    { title: "Kéo Anh Tôi Ra", desc: "Lyrics: OneKang • Artist: Rick", file: "Kéo Anh Tôi Ra.mp3", playCount: 22 },
+    { title: "Chạy Khỏi Tao", desc: "Lyrics: OneKang • Artist: Bảo Black", file: "Chạy khỏi tao.mp3", playCount: 10 },
+    { title: "Còn Ngoại Đâu", desc: "Lyrics: OneKang • Artist: BB.A", file: "Còn ngoại đâu _.mp3", playCount: 5 },
+    { title: "Quên Ngoại", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Quên Ngoại.mp3", playCount: 12 },
+    { title: "Sao Em Lại Chọn Khó Khăn", desc: "Lyrics: OneKang • Artist: ĐạiTo", file: "Sao em lại chọn khó khăn _.mp3", playCount: 18 }
 ];
 
 let currentSong = 0;
@@ -188,22 +197,31 @@ const songDesc = document.getElementById("songDesc");
 const playerArea = document.getElementById("playerArea");
 const playlistEl = document.getElementById("playlist");
 
-// Hàm lọc bài hát theo tiêu đề hoặc tác giả (Hàm mới được thêm)
+// Hàm lọc bài hát theo tiêu đề hoặc tác giả (Giữ nguyên)
 function filterSongs() {
     const input = document.getElementById("searchInput").value.toLowerCase();
     const songItems = document.querySelectorAll(".song-item");
 
     songItems.forEach((item, index) => {
         const songData = songs[index];
-        // Lấy tiêu đề và mô tả (desc) để tìm kiếm
         const textToSearch = (songData.title + " " + songData.desc).toLowerCase();
 
         if (textToSearch.includes(input)) {
-            item.style.display = ""; // Hiển thị
+            item.style.display = "";
         } else {
-            item.style.display = "none"; // Ẩn
+            item.style.display = "none";
         }
     });
+}
+
+// *** HÀM MỚI: Tăng lượt nghe ***
+function incrementPlayCount(index) {
+    if (songs[index]) {
+        // Tăng lượt nghe trong bộ nhớ (Lưu ý: Để lưu trữ vĩnh viễn cần dùng LocalStorage)
+        songs[index].playCount = (songs[index].playCount || 0) + 1;
+        // Cập nhật lại giao diện playlist sau khi tăng
+        updatePlaylistDisplay();
+    }
 }
 
 function loadSong(index) {
@@ -222,19 +240,43 @@ function updatePlaylist() {
     });
 }
 
-// Render playlist
-songs.forEach((song, i) => {
-    const div = document.createElement("div");
-    div.className = "song-item";
-    div.innerHTML = `
-        <div class="song-name">${song.title}</div>
-        <div class="song-info">${song.desc}</div>
-    `;
-    div.onclick = () => loadSong(i);
-    playlistEl.appendChild(div);
-});
+// *** HÀM MỚI: Cập nhật lại giao diện playlist (Tách ra từ hàm render) ***
+function updatePlaylistDisplay() {
+    // Xóa nội dung playlist hiện tại (trừ tiêu đề và ô tìm kiếm)
+    const existingItems = document.querySelectorAll(".song-item");
+    existingItems.forEach(item => item.remove());
 
-// Buttons
+    // Render lại playlist với dữ liệu mới (đã bao gồm playCount mới)
+    songs.forEach((song, i) => {
+        const div = document.createElement("div");
+        div.className = "song-item";
+        
+        // Thêm thẻ hiển thị Lượt Nghe (song-stats)
+        div.innerHTML = `
+            <div class="song-name">${song.title}</div>
+            <div class="song-info">${song.desc}</div>
+            <div class="song-stats">Lượt nghe: ${song.playCount}</div>
+        `;
+        
+        div.onclick = () => loadSong(i);
+        playlistEl.appendChild(div);
+    });
+
+    // Sau khi render xong, đảm bảo bài đang phát được đánh dấu
+    updatePlaylist(); 
+    
+    // Giữ lại bộ lọc nếu người dùng đang tìm kiếm
+    filterSongs();
+}
+
+
+// *** CHỈNH SỬA: Thay thế hàm render playlist cũ bằng hàm mới ***
+// Xóa dòng 'songs.forEach((song, i) => {...});' cũ
+// Và gọi hàm mới để render lần đầu tiên:
+updatePlaylistDisplay(); 
+
+
+// Buttons (Giữ nguyên)
 document.getElementById("playBtn").onclick = () => {
     if (audio.paused) {
         audio.play();
@@ -246,22 +288,33 @@ document.getElementById("playBtn").onclick = () => {
 };
 
 document.getElementById("nextBtn").onclick = () => {
+    // Thêm logic nếu bài đang phát chưa hết mà chuyển bài
+    // Dù không chính xác hoàn toàn nhưng là cách đơn giản để ghi nhận chuyển bài
+    if (!audio.paused) incrementPlayCount(currentSong); 
+    
     currentSong = (currentSong + 1) % songs.length;
     loadSong(currentSong);
 };
 
 document.getElementById("prevBtn").onclick = () => {
+    // Thêm logic nếu bài đang phát chưa hết mà chuyển bài
+    if (!audio.paused) incrementPlayCount(currentSong);
+    
     currentSong = (currentSong - 1 + songs.length) % songs.length;
     loadSong(currentSong);
 };
 
-// Tự chuyển bài
+// *** CHỈNH SỬA: Tự chuyển bài và tăng lượt nghe khi bài hát kết thúc ***
 audio.onended = () => {
+    // Tăng lượt nghe khi bài hát hiện tại kết thúc
+    incrementPlayCount(currentSong); 
+    
+    // Chuyển sang bài tiếp theo
     currentSong = (currentSong + 1) % songs.length;
     loadSong(currentSong);
 };
 
-// Tự động phát bài đầu tiên
+// Tự động phát bài đầu tiên (Giữ nguyên)
 loadSong(0);
 
 </script>
