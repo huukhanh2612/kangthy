@@ -125,6 +125,7 @@
         cursor: pointer;
         box-shadow: 0 0 15px #ff5bb1;
         transition: 0.2s;
+        color: black; /* Thêm màu cho icon để dễ nhìn */
     }
 
     #playBtn {
@@ -136,6 +137,11 @@
     #shuffleBtn {
         background: #ff4fab; 
         box-shadow: 0 0 15px #ff4fab;
+        font-size: 24px;
+    }
+
+    /* THÊM: CSS cho nút Share lớn */
+    #shareBtn {
         font-size: 24px;
     }
 
@@ -183,6 +189,15 @@
         border-radius: 10px;
         cursor: pointer;
         transition: 0.2s;
+        /* Đảm bảo flex để chứa nút share */
+        display: flex; 
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    /* Vùng chứa thông tin để nút share nằm bên phải */
+    .song-details {
+        flex-grow: 1;
     }
 
     .song-item:hover {
@@ -210,6 +225,25 @@
         opacity: 0.7;
         font-size: 13px;
         margin-top: 3px;
+    }
+    
+    /* THÊM: Style cho nút Share nhỏ trong playlist */
+    .share-playlist-btn {
+        background: none;
+        border: none;
+        color: black; /* Màu icon */
+        font-size: 18px;
+        cursor: pointer;
+        padding: 5px;
+        margin-left: 10px;
+        opacity: 0.8;
+        transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .share-playlist-btn:hover {
+        opacity: 1;
+        transform: scale(1.1);
+        color: #ff3399;
     }
     
     /* Nút ẩn/hiện */
@@ -264,6 +298,7 @@
         <button class="btn" id="prevBtn">⏮</button>
         <button class="btn" id="shuffleBtn">🔀</button>
         <button class="btn" id="playBtn">▶️</button>
+        <button class="btn" id="shareBtn">🔗</button>
         <button class="btn" id="nextBtn">⏭</button>
     </div>
 
@@ -293,7 +328,9 @@ const STORAGE_KEY = 'kangthy_music_playlist';
 // LƯU Ý: Vui lòng thay thế 'url_anh_mac_dinh.jpg' và các URL cover khác bằng ảnh của bạn.
 let songs = [
     { title: "Chúng Ta", desc: "Lyrics: OneKang • Artist: BB.A", file: "Chúng ta _.mp3", playCount: 6.6225, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/IMG_5366.JPG" }, 
+    { title: "Đêm Dài", desc: "Lyrics: OneKang • Artist: QUÂNBy - OngKang - Bảo Black", file: "Đêm Dài.mp3", playCount: 6.6225, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/0826d9dfab0e06384ce5e135b70f81be636c0a0d/z7300307998090_e88f094681988496cd7448fdca2a6dcc.jpg" },
     { title: "Xuôi Theo Dòng", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Xuôi theo sông.mp3", playCount: 1.123, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/ee11147f7324130dfdae739dea2204f5c7f63917/diaquay.jpg" },
+    { title: "Đồ Ngon", desc: "Lyrics: OneKang • Artist: Bảo Black", file: "Đồ Ngon.mp3", playCount: 1.123, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/0826d9dfab0e06384ce5e135b70f81be636c0a0d/z7300307221612_0bb54ca8ddc8a81765d57b4ba9785d7f.jpg" },
     { title: "Kéo Anh Tôi Ra", desc: "Lyrics: OneKang • Artist: Rick", file: "Kéo Anh Tôi Ra.mp3", playCount: 2.124, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/8f816a23e19e9041c7cf71b11a907a864c34c03e/photo_2025-03-04_18-40-42.jpg" },
     { title: "Chạy Khỏi Tao", desc: "Lyrics: OneKang • Artist: Bảo Black", file: "Chạy khỏi tao.mp3", playCount: 3.329, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/ee11147f7324130dfdae739dea2204f5c7f63917/diaquay.jpg" },
     { title: "Còn Ngoại Đâu", desc: "Lyrics: OneKang • Artist: BB.A", file: "Còn ngoại đâu _.mp3", playCount: 6.442, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/z7280227127599_19b782c2166dab57ad1468f645d2f276.jpg" },
@@ -319,6 +356,8 @@ const durationTimeEl = document.getElementById("durationTime");
 
 const togglePlaylistBtn = document.getElementById("togglePlaylistBtn");
 const shuffleBtn = document.getElementById("shuffleBtn"); 
+// THÊM: Nút Chia sẻ
+const shareBtn = document.getElementById("shareBtn");
 
 
 // --- HÀM HỖ TRỢ ĐỊNH DẠNG THỜI GIAN ---
@@ -354,7 +393,7 @@ function saveSongsToStorage() {
 }
 // --------------------------------------------------
 
-// Hàm lọc bài hát theo tiêu đề hoặc tác giả (Giữ nguyên)
+// Hàm lọc bài hát theo tiêu đề hoặc tác giả (ĐÃ KHẮC PHỤC LỖI HIỂN THỊ CSS)
 function filterSongs() {
     const input = document.getElementById("searchInput").value.toLowerCase();
     const songItems = document.querySelectorAll(".song-item");
@@ -364,7 +403,8 @@ function filterSongs() {
         const textToSearch = (songData.title + " " + songData.desc).toLowerCase();
 
         if (textToSearch.includes(input)) {
-            item.style.display = "";
+            // KHẮC PHỤC: Sử dụng 'flex' để hiển thị song-item
+            item.style.display = "flex"; 
         } else {
             item.style.display = "none";
         }
@@ -381,7 +421,8 @@ function incrementPlayCount(index) {
     }
 }
 
-function loadSong(index) {
+// CẬP NHẬT: Thêm tham số shouldPlay để kiểm soát việc phát
+function loadSong(index, shouldPlay = true) {
     currentSong = index;
     const songData = songs[index];
     
@@ -392,17 +433,18 @@ function loadSong(index) {
     songTitle.textContent = songData.title;
     songDesc.textContent = songData.desc;
     
-    // Đảm bảo nút play được cập nhật đúng icon
-    if (!audio.paused) {
+    // Đảm bảo nút play được cập nhật đúng icon VÀ tự động phát nếu cần
+    if (shouldPlay) {
         audio.play(); 
+        playerArea.classList.add("playing");
         playBtn.textContent = '⏸️'; 
     } else {
-        // Tự động phát khi chuyển bài
-        audio.play(); 
-        playBtn.textContent = '⏸️'; 
+         audio.pause();
+         playerArea.classList.remove("playing");
+         playBtn.textContent = '▶️';
+         audio.currentTime = 0; // Đặt về đầu bài
     }
 
-    playerArea.classList.add("playing");
     updatePlaylist();
 }
 
@@ -412,8 +454,9 @@ function updatePlaylist() {
     });
 }
 
-// Cập nhật lại giao diện playlist (Giữ nguyên)
+// Cập nhật lại giao diện playlist (ĐÃ THÊM NÚT SHARE NHỎ)
 function updatePlaylistDisplay() {
+    // KHẮC PHỤC: Xóa tất cả song-item cũ trừ input tìm kiếm và tiêu đề
     const songItemsToRemove = document.querySelectorAll("#playlist .song-item");
     songItemsToRemove.forEach(item => item.remove());
 
@@ -425,12 +468,19 @@ function updatePlaylistDisplay() {
         const roundedPlayCount = Math.round(song.playCount || 0); 
 
         div.innerHTML = `
-            <div class="song-name">${song.title}</div>
-            <div class="song-info">${song.desc}</div>
-            <div class="song-stats">Lượt nghe: ${roundedPlayCount}</div>
+            <div class="song-details">
+                <div class="song-name">${song.title}</div>
+                <div class="song-info">${song.desc}</div>
+                <div class="song-stats">Lượt nghe: ${roundedPlayCount}</div>
+            </div>
+            <button class="share-playlist-btn" onclick="handleShare(${i}, event)">🔗</button> 
         `;
         
-        div.onclick = () => loadSong(i);
+        div.onclick = (e) => {
+            // Đảm bảo không load bài khi click vào nút share
+            if (e.target.classList.contains('share-playlist-btn')) return;
+            loadSong(i);
+        };
         playlistEl.appendChild(div);
     });
 
@@ -456,7 +506,9 @@ function shuffleSongs() {
         const j = Math.floor(Math.random() * (i + 1));
         [songs[i], songs[j]] = [songs[j], songs[i]];
     }
-    loadSong(0); 
+    // Gốc: loadSong(0)
+    // Cập nhật: chỉ cập nhật playlist, việc load bài đầu tiên được xử lý trong checkUrlForShare
+    // Tuy nhiên, để giữ đúng hành vi ban đầu, ta gọi updatePlaylistDisplay() sau.
     updatePlaylistDisplay(); 
 }
 
@@ -464,13 +516,69 @@ function shuffleSongs() {
 shuffleBtn.onclick = () => {
     if (!audio.paused) incrementPlayCount(currentSong); 
     shuffleSongs();
+    loadSong(0); // Tự động phát bài đầu tiên sau khi trộn
 };
 // --------------------------------------
+
+// *** THÊM LOGIC CHIA SẺ LINK BÀI HÁT ***
+
+// Hàm xử lý việc chia sẻ
+function handleShare(index, event) {
+    if (event) event.stopPropagation(); // Ngăn sự kiện click lan truyền lên song-item
+
+    const songData = songs[index || currentSong];
+    
+    // Mã hóa tên bài hát để đưa vào URL
+    const encodedTitle = encodeURIComponent(songData.title);
+    
+    // Lấy URL hiện tại và thêm tham số song
+    const shareUrl = `${window.location.origin}${window.location.pathname}?song=${encodedTitle}`;
+    
+    // Sao chép vào clipboard
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            alert(`Đã sao chép liên kết bài hát '${songData.title}' vào clipboard!`);
+        }).catch(err => {
+            console.error('Không thể sao chép URL: ', err);
+            alert('Lỗi: Không thể sao chép liên kết. Vui lòng thử lại.');
+        });
+    } else {
+         // Fallback cho trình duyệt cũ
+        alert(`Liên kết bài hát: ${shareUrl}`);
+    }
+}
+
+// Kiểm tra URL khi tải trang để tải bài hát được chia sẻ
+function checkUrlForShare() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedSongTitle = urlParams.get('song');
+
+    if (sharedSongTitle) {
+        // Giải mã tên bài hát
+        const decodedTitle = decodeURIComponent(sharedSongTitle);
+        
+        // Tìm index của bài hát
+        const index = songs.findIndex(song => song.title === decodedTitle);
+
+        if (index !== -1) {
+            // Tải bài hát được chia sẻ và TỰ ĐỘNG PHÁT (hành vi mong muốn)
+            loadSong(index, true); 
+            return true;
+        }
+    }
+    return false;
+}
+
 
 // --- Khởi tạo và Buttons ---
 
 loadSongsFromStorage(); 
-shuffleSongs(); // Tự động trộn bài và load bài đầu tiên khi tải trang
+shuffleSongs(); // Trộn bài
+// KIỂM TRA: Nếu không có bài hát chia sẻ trong URL, hãy tải bài đầu tiên và tự động phát như code gốc
+if (!checkUrlForShare()) {
+    loadSong(0); 
+}
+
 
 // Buttons (Giữ nguyên)
 playBtn.onclick = () => {
@@ -484,6 +592,10 @@ playBtn.onclick = () => {
         playBtn.textContent = '▶️';
     }
 };
+
+// THÊM: Gán hàm handleShare vào nút Chia sẻ lớn
+shareBtn.onclick = () => handleShare(currentSong);
+
 
 document.getElementById("nextBtn").onclick = () => {
     if (!audio.paused) incrementPlayCount(currentSong); 
