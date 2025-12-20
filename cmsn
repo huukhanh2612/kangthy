@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi Chị Ngọc Anh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #d4a373;
+            --text-color: #5d4037;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #fefae0;
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            color: var(--text-color);
+        }
+
+        #stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(212, 163, 115, 0.2);
+            border: 2px solid #faedcd;
+            transform: translateY(0);
+            transition: 0.5s;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .message-box {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            text-align: justify;
+            margin: 20px 0;
+            border-left: 3px solid var(--primary-color);
+            padding-left: 20px;
+        }
+
+        .highlight {
+            font-weight: 600;
+            color: #bc6c25;
+        }
+
+        .footer-wish {
+            font-style: italic;
+            margin-top: 30px;
+            display: block;
+        }
+
+        .btn-surprise {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(212, 163, 115, 0.4);
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-surprise:hover {
+            transform: scale(1.05);
+            background: #bc6c25;
+        }
+
+        .petal {
+            position: absolute;
+            background: #ffb7b2;
+            border-radius: 150% 0 150% 0;
+            opacity: 0.7;
+            pointer-events: none;
+            animation: fall var(--fall-duration) linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.7; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="birthdayMusic" loop>
+        <source src="https://www.mfiles.co.uk/mp3-downloads/happy-birthday-piano.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="stars-container"></div>
+
+    <div class="container">
+        <div class="card">
+            <h1>Chúc Mừng Sinh Nhật Chị Ngọc Anh!</h1>
+            
+            <div class="message-box">
+                Gửi chị, người đã không chỉ <span class="highlight">dẫn dắt</span> em những bước đi đầu tiên trong công việc mới, mà còn luôn <span class="highlight">che chở</span> và bảo vệ em trước những bỡ ngỡ ban đầu. 
+                <br><br>
+                Em cảm thấy mình thật may mắn khi có một người "tiền bối" tâm huyết và ấm áp như chị. Cảm ơn chị vì đã luôn kiên nhẫn và tin tưởng vào khả năng của em.
+            </div>
+
+            <span class="footer-wish">Chúc chị tuổi mới rực rỡ, hạnh phúc và mãi là nguồn cảm hứng cho chúng em! ✨</span>
+
+            <button class="btn-surprise" id="playBtn" onclick="celebrate()">Nhận lời chúc từ trái tim em</button>
+        </div>
+    </div>
+
+    <script>
+        // Tạo sao lấp lánh nền
+        const starsContainer = document.getElementById('stars-container');
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 4 + 2 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.top = Math.random() * 100 + 'vh';
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+            starsContainer.appendChild(star);
+        }
+
+        function celebrate() {
+            // Phát nhạc
+            const music = document.getElementById('birthdayMusic');
+            music.play().catch(error => {
+                console.log("Trình duyệt chặn phát nhạc tự động, cần tương tác người dùng.");
+            });
+
+            // Đổi nội dung nút
+            document.getElementById('playBtn').innerText = "Đang phát nhạc chúc mừng... ✨";
+
+            // Tạo hiệu ứng cánh hoa bay
+            for (let i = 0; i < 35; i++) {
+                setTimeout(() => {
+                    const petal = document.createElement('div');
+                    petal.className = 'petal';
+                    petal.style.width = Math.random() * 15 + 10 + 'px';
+                    petal.style.height = petal.style.width;
+                    petal.style.left = Math.random() * 100 + 'vw';
+                    petal.style.setProperty('--fall-duration', Math.random() * 3 + 2 + 's');
+                    document.body.appendChild(petal);
+
+                    setTimeout(() => petal.remove(), 5000);
+                }, i * 100);
+            }
+            
+            // Một chút trì hoãn trước khi hiện thông báo để người dùng kịp nghe nhạc
+            setTimeout(() => {
+                alert("Chúc chị Ngọc Anh một ngày sinh nhật thật ấm áp và ý nghĩa bên gia đình, bạn bè ạ! 🌸");
+            }, 500);
+        }
+    </script>
+</body>
+</html>
