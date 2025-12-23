@@ -6,18 +6,31 @@
 <title>Music Player - Kang & Thy</title>
 
 <style>
+    :root {
+        --bg-main: linear-gradient(135deg, #1a1a1a, #3d002f);
+        --primary: #ff87c9;
+        --accent: #ff4fab;
+        --border: #ff8ccd;
+        --text-main: #ffffff;
+        --text-soft: #ffbde6;
+        --disc-border: #ffb6d9;
+        --disc-glow: #ff7ac4;
+        /* Màu bổ sung cho dropdown */
+        --dropdown-bg: #3d002f;
+        --dropdown-text: #ffffff;
+    }
+
     body {
         margin: 0;
         padding: 0;
-        background: linear-gradient(135deg, #1a1a1a, #3d002f);
+        background: var(--bg-main);
         font-family: 'Segoe UI', sans-serif;
-        color: white;
+        color: var(--text-main);
         height: 100vh;
         display: flex;
         overflow: hidden;
     }
 
-    /* Vùng trái chứa đĩa + nút điều khiển */
     .left-panel {
         width: 65%;
         display: flex;
@@ -25,14 +38,11 @@
         align-items: center;
         justify-content: center;
         transition: width 0.3s ease;
+        position: relative;
     }
     
-    /* Khi playlist bị ẩn, left-panel chiếm toàn bộ chiều rộng */
-    .left-panel.full-width {
-        width: 100%; 
-    }
+    .left-panel.full-width { width: 100%; }
 
-    /* Đĩa nhạc */
     .disc-container {
         width: 260px;
         height: 260px;
@@ -41,29 +51,25 @@
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;
-        border: 6px solid #ffb6d9;
-        box-shadow: 0 0 25px #ff7ac4;
+        border: 6px solid var(--disc-border);
+        box-shadow: 0 0 25px var(--disc-glow);
         animation: spin 4s linear infinite;
         animation-play-state: paused;
-        transition: background-image 0.5s ease; 
     }
 
-    .playing .disc-container {
-        animation-play-state: running;
-    }
+    .playing .disc-container { animation-play-state: running; }
 
     @keyframes spin {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
     }
 
-    /* Tiêu đề bài hát */
     .song-title {
         margin-top: 20px;
         font-size: 26px;
         font-weight: bold;
         text-align: center;
-        color: #ffbde6;
+        color: var(--text-soft);
     }
 
     .song-desc {
@@ -71,10 +77,8 @@
         margin-top: 5px;
         opacity: 0.8;
         text-align: center;
-        color: #ffd4ef;
     }
 
-    /* CSS CHO PROGRESS BAR */
     .progress-container {
         width: 70%; 
         max-width: 400px;
@@ -86,15 +90,13 @@
         background: rgba(255, 255, 255, 0.2);
         border-radius: 4px;
         cursor: pointer;
-        position: relative;
     }
 
     .progress {
         height: 100%;
         width: 0%;
-        background: #ff4fab;
+        background: var(--accent);
         border-radius: 4px;
-        transition: width 0.1s linear;
     }
 
     .time-display {
@@ -105,56 +107,37 @@
         opacity: 0.7;
     }
     
-    /* Nút điều khiển */
     .controls {
         margin-top: 20px; 
         display: flex;
-        gap: 15px;
+        gap: 12px;
         align-items: center; 
     }
 
     .btn {
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
         border-radius: 50%;
-        background: #ff87c9;
+        background: var(--primary);
         border: none;
         font-size: 18px;
         cursor: pointer;
-        box-shadow: 0 0 15px #ff5bb1;
+        box-shadow: 0 0 10px var(--accent);
         transition: 0.2s;
-        color: black;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    #playBtn {
-        width: 65px; 
-        height: 65px;
-        font-size: 24px;
-    }
-    
-    #shuffleBtn {
-        background: #ff4fab; 
-        box-shadow: 0 0 15px #ff4fab;
-    }
+    #playBtn { width: 60px; height: 60px; font-size: 24px; }
 
-    .btn:hover {
-        transform: scale(1.15);
-        background: #ff4fab;
-    }
-
-    /* Playlist bên phải */
     .playlist {
         width: 35%;
-        max-width: 400px; 
         background: rgba(255, 255, 255, 0.06);
         backdrop-filter: blur(10px);
-        padding: 25px;
+        padding: 20px;
         overflow-y: auto;
-        height: 100vh;
-        border-left: 2px solid #ff8ccd;
+        border-left: 2px solid var(--border);
         transition: transform 0.3s ease, width 0.3s ease;
     }
     
@@ -165,26 +148,23 @@
         border-left: none;
     }
 
-    .playlist h2 {
-        text-align: center;
-        color: #ffbde6;
-        margin-bottom: 20px;
-    }
-
+    /* ĐÃ SỬA: Màu sắc cho ô Tìm kiếm và Dropdown thể loại */
     .filter-control {
         width: 100%; 
         padding: 10px; 
         margin-bottom: 10px; 
-        border: none; 
+        border: 1px solid var(--border); 
         border-radius: 5px; 
-        background: rgba(255, 255, 255, 0.1); 
-        color: white; 
+        background: var(--dropdown-bg); /* Nền tối */
+        color: var(--dropdown-text); /* Chữ trắng */
         box-sizing: border-box;
+        outline: none;
     }
-    
-    #genreFilter, #genreFilter option {
+
+    /* ĐÃ SỬA: Đảm bảo các lựa chọn bên trong luôn có chữ trắng nền tối */
+    .filter-control option {
         background: #3d002f; 
-        color: #ffbde6;      
+        color: #ffffff;
     }
 
     .song-item {
@@ -193,58 +173,27 @@
         background: rgba(255, 182, 213, 0.15);
         border-radius: 10px;
         cursor: pointer;
-        transition: 0.2s;
         display: flex; 
         justify-content: space-between;
         align-items: center;
     }
-    
-    .song-details {
-        flex-grow: 1;
-        margin-right: 10px;
-    }
 
-    .song-item:hover {
-        background: rgba(255, 182, 213, 0.35);
-    }
+    .song-item.active { background: var(--accent) !important; }
 
-    .active {
-        background: #ff7cc2 !important;
-    }
+    .song-details { flex-grow: 1; overflow: hidden; }
+    .song-name { font-weight: bold; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+    .song-stats { font-size: 11px; color: var(--text-soft); margin-top: 4px; }
 
-    .song-name {
-        font-size: 16px;
-        font-weight: bold;
-    }
-    
-    .song-stats {
-        opacity: 0.9;
-        font-size: 11px;
-        margin-top: 5px;
-        color: #ff91c7;
-    }
-
-    .action-group {
-        display: flex;
-        gap: 8px;
-    }
-
+    .action-group { display: flex; gap: 5px; }
     .action-btn {
         background: rgba(255, 255, 255, 0.2);
         border: none;
         color: white;
-        font-size: 14px;
+        padding: 5px;
+        border-radius: 4px;
         cursor: pointer;
-        padding: 6px;
-        border-radius: 5px;
-        transition: 0.2s;
     }
 
-    .action-btn:hover {
-        background: #ff3399;
-        transform: scale(1.1);
-    }
-    
     #togglePlaylistBtn {
         position: absolute;
         top: 20px;
@@ -252,14 +201,23 @@
         width: 45px;
         height: 45px;
         border-radius: 50%;
-        background: #ff87c9;
+        background: var(--primary);
         border: none;
         cursor: pointer;
         z-index: 1000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         color: white;
+    }
+
+    #themeSelector {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        border: none;
+        background: var(--primary);
+        font-weight: bold;
+        cursor: pointer;
     }
 </style>
 </head>
@@ -267,6 +225,13 @@
 <body>
 
 <div class="left-panel" id="playerArea">
+    <select id="themeSelector">
+        <option value="default">💗 Mặc định</option>
+        <option value="dark">🌙 Dark</option>
+        <option value="love">💞 Love</option>
+        <option value="night">🌌 Night</option>
+    </select>
+
     <button id="togglePlaylistBtn">☰</button> 
 
     <div class="disc-container" id="disc"></div>
@@ -283,20 +248,22 @@
             <span id="durationTime">0:00</span>
         </div>
     </div>
+
     <div class="controls">
-        <button class="btn" id="prevBtn" title="Bài trước">⏮</button>
-        <button class="btn" id="shuffleBtn" title="Trộn bài">🔀</button>
-        <button class="btn" id="playBtn" title="Phát/Tạm dừng">▶️</button>
-        <button class="btn" id="downloadBtn" title="Tải bài này">📥</button>
-        <button class="btn" id="shareBtn" title="Chia sẻ">🔗</button>
-        <button class="btn" id="nextBtn" title="Bài tiếp">⏭</button>
+        <button class="btn" id="prevBtn">⏮</button>
+        <button class="btn" id="shuffleBtn">🔀</button>
+        <button class="btn" id="playBtn">▶️</button>
+        <button class="btn" id="downloadBtn">📥</button>
+        <button class="btn" id="shareBtn">🔗</button>
+        <button class="btn" id="nextBtn">⏭</button>
     </div>
 </div>
 
 <div class="playlist" id="playlist">
-    <h2>Danh Sách Bài Hát</h2>
-    <input type="text" id="searchInput" placeholder="Tìm kiếm tên bài, nghệ sĩ..." onkeyup="filterSongs()" class="filter-control">
+    <h2 style="text-align: center; font-size: 1.2rem;">DANH SÁCH BÀI HÁT</h2>
+    <input type="text" id="searchInput" placeholder="Tìm kiếm..." onkeyup="filterSongs()" class="filter-control">
     <select id="genreFilter" onchange="filterSongs()" class="filter-control"></select>
+    <div id="playlistContent"></div>
 </div>
 
 <audio id="audio"></audio>
@@ -305,200 +272,106 @@
 const STORAGE_KEY = 'kangthy_music_playlist';
 
 let songs = [
-   
-    { title: "Anh Đang Cố", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Anh đang cố.mp3", playCount: 6622, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/41820ab49fc16eb49b50bdd822cdd496535b2843/Gemini_Generated_Image_m4gf0bm4gf0bm4gf.png", genre: "Pop Rap" }, 
-    { title: "Ngày Đông Lạnh", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Ngày đông lạnh.mp3", playCount: 6622, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/41820ab49fc16eb49b50bdd822cdd496535b2843/Gemini_Generated_Image_h1urogh1urogh1ur.png", genre: "Pop Rap" }, 
-    { title: "Đêm Dài", desc: "Lyrics: OneKang • Artist: QuânBy - OngKang - Bảo Black", file: "Đêm Dài.mp3", playCount: 6622, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/0826d9dfab0e06384ce5e135b70f81be636c0a0d/z7300307998090_e88f094681988496cd7448fdca2a6dcc.jpg", genre: "Hip Hop" },
-    { title: "Xuôi Theo Dòng", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Xuôi theo sông.mp3", playCount: 1123, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/ee11147f7324130dfdae739dea2204f5c7f63917/diaquay.jpg", genre: "Ballad Rap" },
-    { title: "Đồ Ngon", desc: "Lyrics: OneKang • Artist: Bảo Black", file: "Đồ Ngon.mp3", playCount: 1123, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/0826d9dfab0e06384ce5e135b70f81be636c0a0d/z7300307221612_0bb54ca8ddc8a81765d57b4ba9785d7f.jpg", genre: "Rap" },
-    { title: "Kéo Anh Tôi Ra", desc: "Lyrics: OneKang • Artist: Rick", file: "Kéo Anh Tôi Ra.mp3", playCount: 2124, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/8f816a23e19e9041c7cf71b11a907a864c34c03e/photo_2025-03-04_18-40-42.jpg", genre: "Hip Hop" },
-    { title: "Chạy Khỏi Tao", desc: "Lyrics: OneKang • Artist: Bảo Black", file: "Chạy khỏi tao.mp3", playCount: 3329, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/ee11147f7324130dfdae739dea2204f5c7f63917/diaquay.jpg", genre: "Rap" },
-    { title: "Còn Ngoại Đâu", desc: "Lyrics: OneKang • Artist: BB.A", file: "Còn ngoại đâu _.mp3", playCount: 6442, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/z7280227127599_19b782c2166dab57ad1468f645d2f276.jpg", genre: "Ballad Rap" },
-    { title: "Quên Ngoại", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Quên Ngoại.mp3", playCount: 4244, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/z7280227127599_19b782c2166dab57ad1468f645d2f276.jpg", genre: "Ballad Rap" },
-    { title: "Sao Em Lại Chọn Khó Khăn", desc: "Lyrics: OneKang • Artist: ĐạiTo", file: "Sao em lại chọn khó khăn _.mp3", playCount: 6122, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/IMG_5366.JPG", genre: "Pop Rap" }
+    { title: "Anh Đang Cố", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Anh đang cố.mp3", playCount: 6622, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/41820ab49fc16eb49b50bdd822cdd496535b2843/Gemini_Generated_Image_m4gf0bm4gf0bm4gf.png", genre: "SUY" }, 
+    { title: "Ngày Đông Lạnh", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Ngày đông lạnh.mp3", playCount: 6622, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/41820ab49fc16eb49b50bdd822cdd496535b2843/Gemini_Generated_Image_h1urogh1urogh1ur.png", genre: "SUY" }, 
+    { title: "Đêm Dài", desc: "Lyrics: OneKang • Artist: QuânBy - OngKang - Bảo Black", file: "Đêm Dài.mp3", playCount: 6622, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/0826d9dfab0e06384ce5e135b70f81be636c0a0d/z7300307998090_e88f094681988496cd7448fdca2a6dcc.jpg", genre: "DỮ" },
+    { title: "Xuôi Theo Dòng", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Xuôi theo sông.mp3", playCount: 1123, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/ee11147f7324130dfdae739dea2204f5c7f63917/diaquay.jpg", genre: "SUY" },
+    { title: "Đồ Ngon", desc: "Lyrics: OneKang • Artist: Bảo Black", file: "Đồ Ngon.mp3", playCount: 1123, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/0826d9dfab0e06384ce5e135b70f81be636c0a0d/z7300307221612_0bb54ca8ddc8a81765d57b4ba9785d7f.jpg", genre: "DỮ" },
+    { title: "Kéo Anh Tôi Ra", desc: "Lyrics: OneKang • Artist: Rick", file: "Kéo Anh Tôi Ra.mp3", playCount: 2124, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/8f816a23e19e9041c7cf71b11a907a864c34c03e/photo_2025-03-04_18-40-42.jpg", genre: "CỨU" },
+    { title: "Chạy Khỏi Tao", desc: "Lyrics: OneKang • Artist: Bảo Black", file: "Chạy khỏi tao.mp3", playCount: 3329, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/ee11147f7324130dfdae739dea2204f5c7f63917/diaquay.jpg", genre: "SUY" },
+    { title: "Còn Ngoại Đâu", desc: "Lyrics: OneKang • Artist: BB.A", file: "Còn ngoại đâu _.mp3", playCount: 6442, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/z7280227127599_19b782c2166dab57ad1468f645d2f276.jpg", genre: "SUY" },
+    { title: "Quên Ngoại", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Quên Ngoại.mp3", playCount: 4244, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/z7280227127599_19b782c2166dab57ad1468f645d2f276.jpg", genre: "SUY" },
+    { title: "Sao Em Lại Chọn Khó Khăn", desc: "Lyrics: OneKang • Artist: ĐạiTo", file: "Sao em lại chọn khó khăn _.mp3", playCount: 6122, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/IMG_5366.JPG", genre: "SUY" }
 ];
 
-let currentSong = 0;
+let currentIndex = 0;
 const audio = document.getElementById("audio");
-const songTitle = document.getElementById("songTitle");
-const songDesc = document.getElementById("songDesc");
-const playerArea = document.getElementById("playerArea");
-const playlistEl = document.getElementById("playlist");
 const playBtn = document.getElementById("playBtn");
-const discEl = document.getElementById("disc"); 
-const progressBar = document.getElementById("progressBar");
-const progress = document.getElementById("progress");
-const currentTimeEl = document.getElementById("currentTime");
-const durationTimeEl = document.getElementById("durationTime");
-const togglePlaylistBtn = document.getElementById("togglePlaylistBtn");
-const shuffleBtn = document.getElementById("shuffleBtn"); 
-const shareBtn = document.getElementById("shareBtn");
-const downloadBtn = document.getElementById("downloadBtn");
-const genreFilterEl = document.getElementById("genreFilter"); 
+const playerArea = document.getElementById("playerArea");
+const playlistContent = document.getElementById("playlistContent");
 
-function formatTime(seconds) {
-    const min = Math.floor(seconds / 60);
-    const sec = Math.floor(seconds % 60);
-    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+// --- LOGIC GIAO DIỆN ---
+const themes = {
+    default:{"--bg-main":"linear-gradient(135deg,#1a1a1a,#3d002f)","--primary":"#ff87c9","--accent":"#ff4fab","--border":"#ff8ccd","--text-main":"#fff","--text-soft":"#ffbde6","--disc-border":"#ffb6d9","--disc-glow":"#ff7ac4","--dropdown-bg":"#3d002f","--dropdown-text":"#ffffff"},
+    dark:{"--bg-main":"linear-gradient(135deg,#000,#1a1a1a)","--primary":"#444","--accent":"#777","--border":"#333","--text-main":"#f5f5f5","--text-soft":"#ccc","--disc-border":"#555","--disc-glow":"#999","--dropdown-bg":"#1a1a1a","--dropdown-text":"#ffffff"},
+    love:{"--bg-main":"linear-gradient(135deg,#ff4f8b,#ff9acb)","--primary":"#ff2f7d","--accent":"#ff66a3","--border":"#ffb6d9","--text-main":"#fff","--text-soft":"#fff0f7","--disc-border":"#fff","--disc-glow":"#ffb6d9","--dropdown-bg":"#ff4f8b","--dropdown-text":"#ffffff"},
+    night:{"--bg-main":"linear-gradient(135deg,#0f2027,#203a43,#2c5364)","--primary":"#3fa9f5","--accent":"#00c6ff","--border":"#3fa9f5","--text-main":"#fff","--text-soft":"#ccefff","--disc-border":"#00c6ff","--disc-glow":"#3fa9f5","--dropdown-bg":"#203a43","--dropdown-text":"#ffffff"}
+};
+
+const selector = document.getElementById("themeSelector");
+function applyTheme(t){
+    Object.entries(themes[t]).forEach(([k,v])=> document.documentElement.style.setProperty(k,v));
+    localStorage.setItem("kangthy_theme",t);
+    selector.value = t;
 }
+selector.onchange=()=>applyTheme(selector.value);
+applyTheme(localStorage.getItem("kangthy_theme")||"default");
 
+document.getElementById("togglePlaylistBtn").onclick = () => {
+    document.getElementById("playlist").classList.toggle('hidden');
+    playerArea.classList.toggle('full-width');
+};
+
+// --- QUẢN LÝ NHẠC ---
 function loadSongsFromStorage() {
-    const storedData = localStorage.getItem(STORAGE_KEY);
-    if (storedData) {
-        const storedSongs = JSON.parse(storedData);
-        songs = songs.map(defaultSong => {
-            const storedSong = storedSongs.find(s => s.title === defaultSong.title);
-            return storedSong ? { ...defaultSong, playCount: storedSong.playCount } : defaultSong;
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+        const storedData = JSON.parse(stored);
+        songs = songs.map(s => {
+            const found = storedData.find(item => item.title === s.title);
+            return found ? {...s, playCount: found.playCount} : s;
         });
     }
 }
 
 function saveSongsToStorage() {
-    const dataToStore = songs.map(song => ({ title: song.title, playCount: song.playCount }));
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToStore));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(songs.map(s => ({title: s.title, playCount: s.playCount}))));
 }
 
-function populateGenreFilter() {
-    const uniqueGenres = [...new Set(songs.map(song => song.genre))].sort();
-    let optionsHtml = '<option value="">Tất cả Thể loại</option>';
-    uniqueGenres.forEach(genre => { if (genre) optionsHtml += `<option value="${genre}">${genre}</option>`; });
-    genreFilterEl.innerHTML = optionsHtml;
-}
-
-function filterSongs() {
-    const input = document.getElementById("searchInput").value.toLowerCase();
-    const selectedGenre = genreFilterEl.value; 
-    const songItems = document.querySelectorAll("#playlist .song-item");
-
-    songItems.forEach((item, index) => {
-        const songData = songs[index];
-        const textToSearch = (songData.title + " " + songData.desc).toLowerCase(); 
-        const matchesSearch = textToSearch.includes(input);
-        const matchesGenre = selectedGenre === "" || songData.genre === selectedGenre;
-        item.style.display = (matchesSearch && matchesGenre) ? "flex" : "none";
-    });
-    updatePlaylistActiveStatus();
-}
-
-function incrementPlayCount(index) {
-    if (songs[index]) {
-        songs[index].playCount = Math.round((songs[index].playCount || 0) + 1); 
-        saveSongsToStorage(); 
-        updatePlaylistDisplay(); 
-    }
-}
-
-function loadSong(index, shouldPlay = true) {
-    currentSong = index;
-    const songData = songs[index];
-    discEl.style.backgroundImage = `url('${songData.cover}')`;
-    audio.src = songData.file;
-    songTitle.textContent = songData.title;
-    songDesc.textContent = songData.desc;
-    
-    if (shouldPlay) {
-        audio.play(); 
-        playerArea.classList.add("playing");
-        playBtn.textContent = '⏸️'; 
-    } else {
-        audio.pause();
-        playerArea.classList.remove("playing");
-        playBtn.textContent = '▶️';
-    }
-    updatePlaylistActiveStatus();
-}
-
-function updatePlaylistActiveStatus() {
-    const songItems = document.querySelectorAll(".song-item");
-    songItems.forEach((item, i) => {
-        item.classList.remove("active");
-        if (i === currentSong && item.style.display !== 'none') {
-            item.classList.add("active");
-        }
-    });
-}
-
-// *** TÍNH NĂNG TẢI NHẠC ***
-function handleDownload(index, event) {
-    if (event) event.stopPropagation();
-    const songData = songs[index !== undefined ? index : currentSong];
-    const link = document.createElement('a');
-    link.href = songData.file;
-    link.download = songData.file; // Đặt tên file khi tải về
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+function formatTime(secs) {
+    const min = Math.floor(secs / 60);
+    const sec = Math.floor(secs % 60);
+    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
 }
 
 function updatePlaylistDisplay() {
-    const songItemsToRemove = document.querySelectorAll("#playlist .song-item");
-    songItemsToRemove.forEach(item => item.remove());
-
-    songs.forEach((song, i) => {
-        const div = document.createElement("div");
-        div.className = "song-item";
-        div.innerHTML = `
+    playlistContent.innerHTML = songs.map((song, i) => `
+        <div class="song-item ${i === currentIndex ? 'active' : ''}" onclick="playSong(${i})">
             <div class="song-details">
-                <div class="song-name">${song.title}</div> 
-                <div class="song-info">${song.desc}</div>
-                <div class="song-stats">Lượt nghe: ${Math.round(song.playCount || 0)}</div>
+                <div class="song-name">${song.title}</div>
+                <div class="song-stats">Lượt nghe: ${Math.round(song.playCount)} | ${song.genre}</div>
             </div>
             <div class="action-group">
-                <button class="action-btn" onclick="handleDownload(${i}, event)" title="Tải xuống">📥</button>
-                <button class="action-btn" onclick="handleShare(${i}, event)" title="Chia sẻ">🔗</button>
+                <button class="action-btn" onclick="handleDownload(${i}, event)">📥</button>
+                <button class="action-btn" onclick="handleShare(${i}, event)">🔗</button>
             </div>
-        `;
-        div.onclick = (e) => { if (!e.target.closest('.action-btn')) loadSong(i); };
-        playlistEl.appendChild(div);
-    });
+        </div>
+    `).join('');
     filterSongs();
 }
 
-togglePlaylistBtn.onclick = () => {
-    playlistEl.classList.toggle('hidden');
-    playerArea.classList.toggle('full-width');
-    togglePlaylistBtn.innerHTML = playlistEl.classList.contains('hidden') ? '▶️' : '☰';
-};
-
-function shuffleSongs() {
-    for (let i = songs.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [songs[i], songs[j]] = [songs[j], songs[i]];
-    }
-    updatePlaylistDisplay(); 
+function loadSong(index) {
+    currentIndex = index;
+    const song = songs[currentIndex];
+    audio.src = song.file;
+    document.getElementById("songTitle").innerText = song.title;
+    document.getElementById("songDesc").innerText = song.desc;
+    document.getElementById("disc").style.backgroundImage = `url('${song.cover}')`;
+    updatePlaylistDisplay();
 }
 
-shuffleBtn.onclick = () => {
-    if (!audio.paused) incrementPlayCount(currentSong); 
-    shuffleSongs();
-    loadSong(0); 
-};
-
-function handleShare(index, event) {
-    if (event) event.stopPropagation(); 
-    const songData = songs[index || currentSong];
-    const shareUrl = `${window.location.origin}${window.location.pathname}?song=${encodeURIComponent(songData.title)}`;
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareUrl).then(() => alert(`Đã copy link bài '${songData.title}'`));
-    } else {
-        alert(`Link: ${shareUrl}`);
-    }
+function playSong(index) {
+    loadSong(index);
+    audio.play();
+    playerArea.classList.add("playing");
+    playBtn.textContent = '⏸️';
 }
 
-function checkUrlForShare() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const sharedTitle = urlParams.get('song');
-    if (sharedTitle) {
-        const index = songs.findIndex(s => s.title === decodeURIComponent(sharedTitle));
-        if (index !== -1) { loadSong(index, true); return true; }
-    }
-    return false;
+function incrementPlayCount() {
+    songs[currentIndex].playCount++;
+    saveSongsToStorage();
+    updatePlaylistDisplay();
 }
-
-loadSongsFromStorage(); 
-populateGenreFilter();
-shuffleSongs();
-if (!checkUrlForShare()) loadSong(0, false); // Bài đầu tiên không tự phát để tránh lỗi trình duyệt
 
 playBtn.onclick = () => {
     if (audio.paused) {
@@ -512,39 +385,69 @@ playBtn.onclick = () => {
     }
 };
 
-shareBtn.onclick = () => handleShare(currentSong);
-downloadBtn.onclick = () => handleDownload(); // Tải bài hiện tại
-
 document.getElementById("nextBtn").onclick = () => {
-    incrementPlayCount(currentSong); 
-    currentSong = (currentSong + 1) % songs.length;
-    loadSong(currentSong);
+    incrementPlayCount();
+    currentIndex = (currentIndex + 1) % songs.length;
+    playSong(currentIndex);
 };
 
 document.getElementById("prevBtn").onclick = () => {
-    incrementPlayCount(currentSong);
-    currentSong = (currentSong - 1 + songs.length) % songs.length;
-    loadSong(currentSong);
+    incrementPlayCount();
+    currentIndex = (currentIndex - 1 + songs.length) % songs.length;
+    playSong(currentIndex);
 };
+
+document.getElementById("shuffleBtn").onclick = () => {
+    songs.sort(() => Math.random() - 0.5);
+    playSong(0);
+};
+
+function handleDownload(i, e) {
+    if(e) e.stopPropagation();
+    const link = document.createElement('a');
+    link.href = songs[i].file;
+    link.download = songs[i].file;
+    link.click();
+}
+
+function handleShare(i, e) {
+    if(e) e.stopPropagation();
+    const url = `${window.location.origin}${window.location.pathname}?song=${encodeURIComponent(songs[i].title)}`;
+    navigator.clipboard.writeText(url).then(() => alert("Đã sao chép link bài hát!"));
+}
+
+function filterSongs() {
+    const term = document.getElementById("searchInput").value.toLowerCase();
+    const genre = document.getElementById("genreFilter").value;
+    const items = document.querySelectorAll(".song-item");
+    items.forEach((item, i) => {
+        const s = songs[i];
+        const matchTerm = s.title.toLowerCase().includes(term) || s.desc.toLowerCase().includes(term);
+        const matchGenre = !genre || s.genre === genre;
+        item.style.display = (matchTerm && matchGenre) ? "flex" : "none";
+    });
+}
+
+function populateGenres() {
+    const genres = ["", ...new Set(songs.map(s => s.genre))];
+    document.getElementById("genreFilter").innerHTML = genres.map(g => `<option value="${g}">${g || "Tất cả thể loại"}</option>`).join('');
+}
 
 audio.ontimeupdate = () => {
     if (audio.duration) {
-        progress.style.width = (audio.currentTime / audio.duration) * 100 + '%';
-        currentTimeEl.textContent = formatTime(audio.currentTime);
+        document.getElementById("progress").style.width = (audio.currentTime / audio.duration) * 100 + "%";
+        document.getElementById("currentTime").innerText = formatTime(audio.currentTime);
     }
 };
-
-audio.onloadedmetadata = () => durationTimeEl.textContent = formatTime(audio.duration);
-
-progressBar.onclick = (e) => {
-    audio.currentTime = (e.offsetX / progressBar.clientWidth) * audio.duration;
+audio.onloadedmetadata = () => document.getElementById("durationTime").innerText = formatTime(audio.duration);
+audio.onended = () => document.getElementById("nextBtn").click();
+document.getElementById("progressBar").onclick = (e) => {
+    audio.currentTime = (e.offsetX / e.target.clientWidth) * audio.duration;
 };
 
-audio.onended = () => {
-    incrementPlayCount(currentSong); 
-    currentSong = (currentSong + 1) % songs.length;
-    loadSong(currentSong);
-};
+loadSongsFromStorage();
+populateGenres();
+loadSong(0);
 </script>
 </body>
 </html>
