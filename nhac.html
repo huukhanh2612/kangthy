@@ -29,30 +29,6 @@
         overflow: hidden;
     }
 
-    /* --- MỤC 2: BRANDING (Header & Logo) --- */
-    #brandHeader {
-        position: absolute;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        z-index: 100;
-    }
-    .brand-logo {
-        width: 35px;
-        height: 35px;
-        object-fit: contain;
-    }
-    .brand-name {
-        font-size: 18px;
-        font-weight: bold;
-        letter-spacing: 1.5px;
-        color: var(--text-soft);
-        text-shadow: 0 0 10px var(--accent);
-    }
-
     #mainUI {
         display: flex;
         width: 100%;
@@ -72,7 +48,6 @@
     
     .left-panel.full-width { width: 100%; }
 
-    /* Đĩa nhạc với logo ONEKANG ở tâm */
     .disc-container {
         width: 260px; height: 260px;
         border-radius: 50%;
@@ -163,7 +138,6 @@
         background: var(--dropdown-bg); color: var(--dropdown-text);
         box-sizing: border-box; outline: none;
     }
-    .filter-control option { background: #3d002f; color: #ffffff; }
 
     .song-item {
         padding: 12px; margin-bottom: 10px;
@@ -195,51 +169,39 @@
         transition: 0.3s;
     }
 
-    /* --- MỤC 4: CHẾ ĐỘ CHỜ (IDLE MODE) --- */
     #idleOverlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.95);
+        background: rgba(0, 0, 0, 0.98);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         opacity: 0; pointer-events: none; transition: opacity 2s ease;
         z-index: 9999;
     }
     #idleOverlay.active { opacity: 1; pointer-events: all; }
-    #visualizer { width: 100%; height: 350px; position: absolute; bottom: 0; }
-    .idle-info { text-align: center; z-index: 10001; }
-    .idle-title { font-size: 60px; font-weight: bold; color: var(--primary); text-shadow: 0 0 20px var(--accent); margin: 0; }
-    .idle-artist { font-size: 24px; color: var(--text-soft); margin-top: 10px; }
-    .idle-quote { 
-        margin-top: 30px; 
-        font-style: italic; 
-        font-size: 18px; 
-        color: #fff; 
-        opacity: 0.7; 
-        max-width: 80%;
-        text-shadow: 0 0 5px var(--accent);
-    }
-    .highlight-info { transform: scale(1.3); text-shadow: 0 0 30px var(--accent); }
+    #visualizer { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+    
+    .idle-info { text-align: center; z-index: 10001; pointer-events: none; }
+    .idle-title { font-size: 50px; font-weight: bold; color: var(--primary); text-shadow: 0 0 20px var(--accent); margin: 0; }
+    .idle-artist { font-size: 20px; color: var(--text-soft); margin-top: 10px; }
+    .idle-quote { margin-top: 20px; font-style: italic; font-size: 16px; color: #fff; opacity: 0.6; }
+    .visualizer-type-tag { position: absolute; bottom: 20px; right: 20px; font-size: 10px; opacity: 0.3; color: white; }
 </style>
 </head>
 
 <body>
 
 <div id="idleOverlay" onclick="resetIdle()">
+    <canvas id="visualizer"></canvas>
     <div class="idle-info">
         <p class="idle-title" id="idleTitle"></p>
         <p class="idle-artist" id="idleArtist"></p>
         <p class="idle-quote" id="idleQuote"></p>
-        <p style="font-size: 12px; margin-top: 30px; opacity: 0.3;">Chạm bất kỳ đâu để quay lại</p>
+        <p style="font-size: 12px; margin-top: 30px; opacity: 0.3;">Chạm để quay lại</p>
     </div>
-    <canvas id="visualizer"></canvas>
+    <div class="visualizer-type-tag" id="visTag">Kiểu sóng: Ngẫu nhiên</div>
 </div>
 
 <div id="mainUI">
     <div class="left-panel" id="playerArea">
-        
-        <div id="brandHeader">
-            
-        </div>
-
         <select id="themeSelector">
             <option value="default">💗 OneKang</option>
             <option value="dark">🌙 Dark</option>
@@ -247,8 +209,8 @@
             <option value="night">🌌 Night</option>
         </select>
 
-        <button id="togglePlaylistBtn" title="Danh sách nhạc">☰</button> 
-        <button id="manualIdleBtn" title="Bật chế độ chờ" onclick="forceIdle()">🌙</button>
+        <button id="togglePlaylistBtn">☰</button> 
+        <button id="manualIdleBtn" onclick="forceIdle()">🌙</button>
 
         <div class="disc-container" id="disc"></div>
 
@@ -279,9 +241,7 @@
         <h2 style="text-align: center; font-size: 1.2rem;">KHO NHẠC KANG & THY</h2>
         <input type="text" id="searchInput" placeholder="Tìm bài hát..." onkeyup="filterSongs()" class="filter-control">
         <select id="genreFilter" onchange="filterSongs()" class="filter-control"></select>
-        
         <div id="playlistContent"></div>
-
         <div class="copyright-info">
             Mọi bài hát đều được sáng tác bởi <strong>ONEKANG</strong><br>
             Chi tiết bản quyền liên hệ: <u>phanhuukhanh2612@gmail.com</u>
@@ -296,8 +256,8 @@ const loveQuotes = [
     "Mọi bản nhạc đều hay hơn khi nghe cùng Thy.",
     "Âm nhạc của Kang, cảm hứng từ Thy.",
     "Hạnh phúc là mỗi ngày được nghe nhạc cùng nhau.",
-    "Dành riêng cho không gian của chúng ta.",
-    "Giai điệu này gửi gắm tình yêu của Kang dành cho Thy."
+    "Giai điệu này gửi gắm tình yêu của Kang dành cho Thy.",
+    "Thy là nốt nhạc đẹp nhất trong bản nhạc cuộc đời Kang."
 ];
 
 let songs = [
@@ -315,33 +275,27 @@ let songs = [
 ];
 
 let currentIndex = 0;
+let currentVisualizerType = 0;
 const audio = document.getElementById("audio");
 const playBtn = document.getElementById("playBtn");
 const playerArea = document.getElementById("playerArea");
 const playlistContent = document.getElementById("playlistContent");
 
-// --- LOGIC IDLE (CHẾ ĐỘ CHỜ) ---
+// --- HỆ THỐNG IDLE & VISUALIZER ---
 let idleTime = 0;
-const idleLimit = 15; 
+const idleLimit = 15;
 const mainUI = document.getElementById("mainUI");
 const idleOverlay = document.getElementById("idleOverlay");
-const songTitleUI = document.getElementById("songTitle");
-const songDescUI = document.getElementById("songDesc");
 
 function resetIdle() {
     idleTime = 0;
     mainUI.style.opacity = "1";
     mainUI.style.filter = "none";
     idleOverlay.classList.remove("active");
-    songTitleUI.classList.remove("highlight-info");
-    songDescUI.classList.remove("highlight-info");
 }
 
 function forceIdle() {
-    if (audio.paused) {
-        alert("Vui lòng phát nhạc để trải nghiệm hiệu ứng sóng nhạc!");
-        return;
-    }
+    if (audio.paused) { alert("Phát nhạc để xem sóng nhạc!"); return; }
     idleTime = idleLimit;
     activateIdle();
 }
@@ -350,6 +304,7 @@ function activateIdle() {
     mainUI.style.opacity = "0";
     mainUI.style.filter = "blur(10px)";
     idleOverlay.classList.add("active");
+    currentVisualizerType = Math.floor(Math.random() * 10);
     updateIdleInfo();
     startVisualizer();
 }
@@ -358,23 +313,18 @@ function updateIdleInfo() {
     document.getElementById("idleTitle").innerText = songs[currentIndex].title;
     document.getElementById("idleArtist").innerText = songs[currentIndex].desc;
     document.getElementById("idleQuote").innerText = loveQuotes[Math.floor(Math.random() * loveQuotes.length)];
+    document.getElementById("visTag").innerText = "Chế độ sóng: " + (currentVisualizerType + 1);
 }
 
 window.onmousemove = resetIdle;
 window.onkeydown = resetIdle;
-
 setInterval(() => {
     if (!audio.paused && !idleOverlay.classList.contains("active")) {
         idleTime++;
-        if (idleTime == 5) {
-            songTitleUI.classList.add("highlight-info");
-            songDescUI.classList.add("highlight-info");
-        }
         if (idleTime >= idleLimit) activateIdle();
     }
 }, 1000);
 
-// --- VISUALIZER ---
 let audioCtx, analyser, source, canvas, ctx, bufferLength, dataArray;
 function startVisualizer() {
     if (!audioCtx) {
@@ -383,13 +333,12 @@ function startVisualizer() {
         source = audioCtx.createMediaElementSource(audio);
         source.connect(analyser);
         analyser.connect(audioCtx.destination);
-        analyser.fftSize = 256;
-        bufferLength = analyser.frequencyBinCount;
-        dataArray = new Uint8Array(bufferLength);
-        canvas = document.getElementById("visualizer");
-        ctx = canvas.getContext("2d");
     }
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    analyser.fftSize = 256;
+    bufferLength = analyser.frequencyBinCount;
+    dataArray = new Uint8Array(bufferLength);
+    canvas = document.getElementById("visualizer");
+    ctx = canvas.getContext("2d");
     draw();
 }
 
@@ -398,16 +347,105 @@ function draw() {
     requestAnimationFrame(draw);
     analyser.getByteFrequencyData(dataArray);
     canvas.width = window.innerWidth;
-    canvas.height = 350;
+    canvas.height = window.innerHeight;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const barWidth = (canvas.width / bufferLength) * 2.5;
-    let barHeight;
-    let x = 0;
-    for (let i = 0; i < bufferLength; i++) {
-        barHeight = dataArray[i] * 1.3;
-        ctx.fillStyle = `rgba(255, 135, 201, ${barHeight/255})`;
-        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-        x += barWidth + 1;
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const barWidth = (canvas.width / bufferLength) * 2;
+    let color = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+
+    switch(currentVisualizerType) {
+        case 0: // Cột đáy
+            for (let i = 0; i < bufferLength; i++) {
+                let h = dataArray[i] * 1.5;
+                ctx.fillStyle = color;
+                ctx.fillRect(i * barWidth, canvas.height - h, barWidth - 2, h);
+            }
+            break;
+        case 1: // Cột đối xứng trên dưới
+            for (let i = 0; i < bufferLength; i++) {
+                let h = dataArray[i] * 1.2;
+                ctx.fillStyle = color;
+                ctx.fillRect(i * barWidth, centerY - h/2, barWidth - 2, h);
+            }
+            break;
+        case 2: // Vòng tròn tỏa ra
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 100, 0, Math.PI * 2);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            for (let i = 0; i < bufferLength; i++) {
+                let rads = Math.PI * 2 / bufferLength;
+                let h = dataArray[i] * 0.8;
+                let x = centerX + Math.cos(rads * i) * (100);
+                let y = centerY + Math.sin(rads * i) * (100);
+                let x_end = centerX + Math.cos(rads * i) * (100 + h);
+                let y_end = centerY + Math.sin(rads * i) * (100 + h);
+                ctx.moveTo(x, y); ctx.lineTo(x_end, y_end);
+            }
+            ctx.stroke();
+            break;
+        case 3: // Sóng trung tâm tỏa sang 2 bên
+            for (let i = 0; i < bufferLength/2; i++) {
+                let h = dataArray[i] * 1.5;
+                ctx.fillStyle = color;
+                ctx.fillRect(centerX + (i * barWidth), centerY - h/2, barWidth - 2, h);
+                ctx.fillRect(centerX - (i * barWidth), centerY - h/2, barWidth - 2, h);
+            }
+            break;
+        case 4: // Những viên gạch bay
+            for (let i = 0; i < bufferLength; i+=4) {
+                let h = dataArray[i] * 2;
+                ctx.fillStyle = color;
+                ctx.globalAlpha = 0.5;
+                ctx.fillRect(i * (canvas.width/bufferLength), canvas.height - h - 50, 15, 15);
+            }
+            ctx.globalAlpha = 1;
+            break;
+        case 5: // Vòng tròn hạt bụi
+            for (let i = 0; i < bufferLength; i++) {
+                let angle = i * 4;
+                let r = dataArray[i] * 1.2;
+                let x = centerX + r * Math.cos(angle);
+                let y = centerY + r * Math.sin(angle);
+                ctx.fillStyle = "white";
+                ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI*2); ctx.fill();
+            }
+            break;
+        case 6: // Line mỏng chạy giữa
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            for (let i = 0; i < bufferLength; i++) {
+                let h = (dataArray[i] - 128) * 2;
+                ctx.lineTo(i * (canvas.width/bufferLength) * 2, centerY + h);
+            }
+            ctx.strokeStyle = color; ctx.stroke();
+            break;
+        case 7: // Cột từ 4 góc
+            let corners = [[0,0], [canvas.width, 0], [0, canvas.height], [canvas.width, canvas.height]];
+            corners.forEach(c => {
+                for(let i=0; i<20; i++) {
+                    let h = dataArray[i*2] * 0.5;
+                    ctx.fillStyle = color;
+                    ctx.fillRect(c[0], c[1], (c[0]==0?h:-h), (c[1]==0?20:-20));
+                }
+            });
+            break;
+        case 8: // Radar quét
+            let r_max = dataArray[10] * 1.5;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, r_max, 0, Math.PI*2);
+            ctx.strokeStyle = color; ctx.globalAlpha = 0.3; ctx.stroke(); ctx.globalAlpha = 1;
+            break;
+        case 9: // Mưa rơi từ trên xuống
+            for (let i = 0; i < bufferLength; i+=2) {
+                let h = dataArray[i] * 1.5;
+                ctx.fillStyle = color;
+                ctx.fillRect(i * barWidth, 0, 2, h);
+            }
+            break;
     }
 }
 
@@ -439,12 +477,9 @@ function updatePlaylistDisplay() {
                 <div class="song-name">${song.title}</div>
                 <div class="song-stats">Lượt nghe: ${Math.round(song.playCount)} | ${song.genre}</div>
             </div>
-            <div class="action-group">
-                <button class="action-btn" onclick="const link=document.createElement('a');link.href='${song.file}';link.download='${song.file}';link.click();event.stopPropagation();">📥</button>
-            </div>
+            <button class="action-btn" onclick="const link=document.createElement('a');link.href='${song.file}';link.download='${song.file}';link.click();event.stopPropagation();">📥</button>
         </div>
     `).join('');
-    filterSongs();
 }
 
 function loadSong(index) {
@@ -454,8 +489,8 @@ function loadSong(index) {
     document.getElementById("songTitle").innerText = song.title;
     document.getElementById("songDesc").innerText = song.desc;
     document.getElementById("disc").style.backgroundImage = `url('${song.cover}')`;
-    
     if (idleOverlay.classList.contains("active")) {
+        currentVisualizerType = Math.floor(Math.random() * 10);
         updateIdleInfo();
     }
     updatePlaylistDisplay();
@@ -469,15 +504,8 @@ function playSong(index) {
 }
 
 playBtn.onclick = () => {
-    if (audio.paused) {
-        audio.play();
-        playerArea.classList.add("playing");
-        playBtn.textContent = '⏸️';
-    } else {
-        audio.pause();
-        playerArea.classList.remove("playing");
-        playBtn.textContent = '▶️';
-    }
+    if (audio.paused) { audio.play(); playerArea.classList.add("playing"); playBtn.textContent = '⏸️'; }
+    else { audio.pause(); playerArea.classList.remove("playing"); playBtn.textContent = '▶️'; }
 };
 
 document.getElementById("nextBtn").onclick = () => {
