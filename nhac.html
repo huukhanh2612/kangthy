@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Music Player - Kang & Thy</title>
 
 <style>
@@ -27,163 +27,95 @@
         height: 100vh;
         display: flex;
         overflow: hidden;
+        touch-action: manipulation;
     }
 
     #mainUI {
-        display: flex;
-        width: 100%;
-        height: 100%;
-        transition: opacity 1.5s ease, filter 1.5s ease;
+        display: flex; width: 100%; height: 100%;
+        transition: opacity 1s ease, filter 1s ease;
     }
 
     .left-panel {
-        width: 65%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        transition: width 0.3s ease;
-        position: relative;
+        width: 65%; display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        position: relative; padding: 20px; box-sizing: border-box;
     }
     
-    .left-panel.full-width { width: 100%; }
+    @media (max-width: 768px) {
+        .left-panel { width: 100%; }
+        .playlist {
+            position: absolute; right: 0; width: 85% !important;
+            height: 100%; z-index: 2000; background: rgba(15, 0, 10, 0.95) !important;
+        }
+        .disc-container { width: 220px !important; height: 220px !important; }
+        .idle-title { font-size: 30px !important; }
+    }
 
     .disc-container {
-        width: 260px; height: 260px;
-        border-radius: 50%;
-        background-color: #333; 
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: cover;
-        border: 6px solid var(--disc-border);
-        box-shadow: 0 0 25px var(--disc-glow);
-        animation: spin 4s linear infinite;
-        animation-play-state: paused;
+        width: 280px; height: 280px; border-radius: 50%;
+        background-color: #333; background-position: center; background-size: cover;
+        border: 6px solid var(--disc-border); box-shadow: 0 0 25px var(--disc-glow);
+        animation: spin 5s linear infinite; animation-play-state: paused;
         position: relative;
     }
     .disc-container::after {
-        content: "";
-        position: absolute;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        width: 55px; height: 55px;
-        background: #000 url('https://raw.githubusercontent.com/huukhanh2612/kangthy/960b2ee0081e2c2c02bdc3310e805db0558a697f/onekang.png') no-repeat center;
-        background-size: 80%;
-        border-radius: 50%;
-        border: 2px solid var(--disc-border);
-        box-shadow: inset 0 0 10px rgba(255,255,255,0.5);
+        content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: 50px; height: 50px; background: #000 url('https://raw.githubusercontent.com/huukhanh2612/kangthy/960b2ee0081e2c2c02bdc3310e805db0558a697f/onekang.png') no-repeat center;
+        background-size: 80%; border-radius: 50%; border: 2px solid var(--disc-border);
     }
-
     .playing .disc-container { animation-play-state: running; }
-
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-    .song-title {
-        margin-top: 20px;
-        font-size: 26px;
-        font-weight: bold;
-        text-align: center;
-        color: var(--text-soft);
-        transition: all 1s ease;
-    }
+    .song-title { margin-top: 20px; font-size: 24px; font-weight: bold; text-align: center; color: var(--text-soft); }
+    .song-desc { font-size: 14px; opacity: 0.8; text-align: center; margin-top: 5px; }
 
-    .song-desc {
-        font-size: 14px; margin-top: 5px;
-        opacity: 0.8; text-align: center;
-        transition: all 1s ease;
-    }
-
-    .progress-container { width: 70%; max-width: 400px; margin-top: 30px; }
-    .progress-bar { height: 8px; background: rgba(255, 255, 255, 0.2); border-radius: 4px; cursor: pointer; }
+    .progress-container { width: 90%; max-width: 400px; margin-top: 25px; }
+    .progress-bar { height: 8px; background: rgba(255, 255, 255, 0.2); border-radius: 4px; cursor: pointer; position: relative; }
     .progress { height: 100%; width: 0%; background: var(--accent); border-radius: 4px; }
-    .time-display { display: flex; justify-content: space-between; margin-top: 5px; font-size: 12px; opacity: 0.7; }
+    .time-display { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; opacity: 0.8; }
     
-    .controls { margin-top: 20px; display: flex; gap: 12px; align-items: center; }
+    .controls { margin-top: 20px; display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
     .btn {
         width: 45px; height: 45px; border-radius: 50%;
         background: var(--primary); border: none; font-size: 18px;
         cursor: pointer; box-shadow: 0 0 10px var(--accent);
-        transition: 0.2s; display: flex; align-items: center; justify-content: center;
+        display: flex; align-items: center; justify-content: center; color: #000;
     }
     #playBtn { width: 60px; height: 60px; font-size: 24px; }
 
     .playlist {
-        width: 35%;
-        background: rgba(255, 255, 255, 0.06);
-        backdrop-filter: blur(10px);
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        border-left: 2px solid var(--border);
-        transition: transform 0.3s ease, width 0.3s ease;
+        width: 35%; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px);
+        padding: 20px; display: flex; flex-direction: column;
+        border-left: 2px solid var(--border); transition: transform 0.3s ease;
     }
-    
-    .playlist.hidden { transform: translateX(100%); width: 0; padding: 0; border-left: none; }
-
-    #playlistContent { flex-grow: 1; overflow-y: auto; margin-bottom: 15px; }
-
-    .copyright-info {
-        font-size: 11px;
-        text-align: center;
-        padding: 10px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        color: var(--text-soft);
-        line-height: 1.4;
-        opacity: 0.8;
-    }
+    .playlist.hidden { transform: translateX(100%); }
+    #playlistContent { flex-grow: 1; overflow-y: auto; }
 
     .filter-control {
-        width: 100%; padding: 10px; margin-bottom: 10px; 
-        border: 1px solid var(--border); border-radius: 5px; 
-        background: var(--dropdown-bg); color: var(--dropdown-text);
-        box-sizing: border-box; outline: none;
+        width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px;
+        border: 1px solid var(--border); background: var(--dropdown-bg); color: white;
     }
 
     .song-item {
-        padding: 12px; margin-bottom: 10px;
-        background: rgba(255, 182, 213, 0.15); border-radius: 10px;
-        cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+        padding: 12px; margin-bottom: 8px; background: rgba(255, 182, 213, 0.1);
+        border-radius: 10px; cursor: pointer; display: flex; align-items: center;
     }
     .song-item.active { background: var(--accent) !important; }
-    .song-details { flex-grow: 1; overflow: hidden; }
-    .song-name { font-weight: bold; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
-    .song-stats { font-size: 11px; color: var(--text-soft); margin-top: 4px; }
-    
-    #togglePlaylistBtn {
-        position: absolute; top: 20px; right: 20px; 
-        width: 45px; height: 45px; border-radius: 50%;
-        background: var(--primary); border: none;
-        cursor: pointer; z-index: 1000; color: white;
-    }
-    #themeSelector {
-        position: absolute; top: 20px; left: 20px;
-        padding: 6px 12px; border-radius: 20px; border: none;
-        background: var(--primary); font-weight: bold; cursor: pointer;
-    }
-    #manualIdleBtn {
-        position: absolute; bottom: 20px; left: 20px;
-        width: 45px; height: 45px; border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1); border: 1px solid var(--border);
-        color: white; cursor: pointer; z-index: 1000;
-        display: flex; align-items: center; justify-content: center;
-        transition: 0.3s;
-    }
+
+    #togglePlaylistBtn { position: absolute; top: 20px; right: 20px; width: 45px; height: 45px; border-radius: 50%; background: var(--primary); border: none; cursor: pointer; z-index: 2100; color: #000; }
+    #manualIdleBtn { position: absolute; bottom: 20px; left: 20px; width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: #fff; cursor: pointer; z-index: 1000; display: flex; align-items: center; justify-content: center; }
+    #themeSelector { position: absolute; top: 20px; left: 20px; padding: 8px; border-radius: 20px; background: var(--primary); border: none; font-weight: bold; font-size: 12px; }
 
     #idleOverlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.98);
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        opacity: 0; pointer-events: none; transition: opacity 2s ease;
-        z-index: 9999;
+        opacity: 0; pointer-events: none; transition: opacity 1s ease; z-index: 9999;
     }
     #idleOverlay.active { opacity: 1; pointer-events: all; }
-    #visualizer { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
-    
-    .idle-info { text-align: center; z-index: 10001; pointer-events: none; }
-    .idle-title { font-size: 50px; font-weight: bold; color: var(--primary); text-shadow: 0 0 20px var(--accent); margin: 0; }
-    .idle-artist { font-size: 20px; color: var(--text-soft); margin-top: 10px; }
-    .idle-quote { margin-top: 20px; font-style: italic; font-size: 16px; color: #fff; opacity: 0.6; }
-    .visualizer-type-tag { position: absolute; bottom: 20px; right: 20px; font-size: 10px; opacity: 0.3; color: white; }
+    #visualizer { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
+    .idle-info { text-align: center; z-index: 10001; pointer-events: none; padding: 20px; }
+    .idle-title { font-size: 45px; font-weight: bold; color: var(--primary); text-shadow: 0 0 20px var(--accent); margin: 0; }
+    .vis-tag { position: absolute; bottom: 20px; right: 20px; font-size: 10px; opacity: 0.5; color: #fff; }
 </style>
 </head>
 
@@ -193,11 +125,11 @@
     <canvas id="visualizer"></canvas>
     <div class="idle-info">
         <p class="idle-title" id="idleTitle"></p>
-        <p class="idle-artist" id="idleArtist"></p>
-        <p class="idle-quote" id="idleQuote"></p>
-        <p style="font-size: 12px; margin-top: 30px; opacity: 0.3;">Chạm để quay lại</p>
+        <p id="idleArtist" style="color: var(--text-soft); font-size: 18px; margin-top: 10px;"></p>
+        <p id="idleQuote" style="font-style: italic; opacity: 0.7; margin-top: 20px; max-width: 80%; margin-left: auto; margin-right: auto;"></p>
+        <p style="font-size: 12px; margin-top: 40px; opacity: 0.3;">Chạm để quay lại</p>
     </div>
-    <div class="visualizer-type-tag" id="visTag">Kiểu sóng: Ngẫu nhiên</div>
+    <div class="vis-tag" id="visTag">Kiểu sóng: 1</div>
 </div>
 
 <div id="mainUI">
@@ -237,29 +169,18 @@
         </div>
     </div>
 
-    <div class="playlist" id="playlist">
-        <h2 style="text-align: center; font-size: 1.2rem;">KHO NHẠC KANG & THY</h2>
-        <input type="text" id="searchInput" placeholder="Tìm bài hát..." onkeyup="filterSongs()" class="filter-control">
+    <div class="playlist hidden" id="playlist">
+        <h2 style="text-align: center; font-size: 1.1rem; margin-top: 50px;">KHO NHẠC KANG & THY</h2>
+        <input type="text" id="searchInput" placeholder="Tìm kiếm..." onkeyup="filterSongs()" class="filter-control">
         <select id="genreFilter" onchange="filterSongs()" class="filter-control"></select>
         <div id="playlistContent"></div>
-        <div class="copyright-info">
-            Mọi bài hát đều được sáng tác bởi <strong>ONEKANG</strong><br>
-            Chi tiết bản quyền liên hệ: <u>phanhuukhanh2612@gmail.com</u>
-        </div>
     </div>
 </div>
 
 <audio id="audio" crossorigin="anonymous"></audio>
 
 <script>
-const loveQuotes = [
-    "Mọi bản nhạc đều hay hơn khi nghe cùng Thy.",
-    "Âm nhạc của Kang, cảm hứng từ Thy.",
-    "Hạnh phúc là mỗi ngày được nghe nhạc cùng nhau.",
-    "Giai điệu này gửi gắm tình yêu của Kang dành cho Thy.",
-    "Thy là nốt nhạc đẹp nhất trong bản nhạc cuộc đời Kang."
-];
-
+const loveQuotes = ["Mọi bản nhạc đều hay hơn khi nghe cùng Thy.", "Âm nhạc của Kang, cảm hứng từ Thy.", "Hạnh phúc là mỗi ngày được nghe nhạc cùng nhau.", "Giai điệu này gửi gắm tình yêu của Kang dành cho Thy.", "Thy là nốt nhạc đẹp nhất trong bản nhạc cuộc đời Kang."];
 let songs = [
     { title: "Chúng Ta", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Chúng ta _.mp3", playCount: 6422, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/IMG_5366.JPG", genre: "SUY" }, 
     { title: "Anh Đang Cố", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Anh đang cố.mp3", playCount: 6622, cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/41820ab49fc16eb49b50bdd822cdd496535b2843/Gemini_Generated_Image_m4gf0bm4gf0bm4gf.png", genre: "SUY" }, 
@@ -275,285 +196,198 @@ let songs = [
 ];
 
 let currentIndex = 0;
-let currentVisualizerType = 0;
+let idleTime = 0;
+let currentVisType = 0;
 const audio = document.getElementById("audio");
 const playBtn = document.getElementById("playBtn");
-const playerArea = document.getElementById("playerArea");
-const playlistContent = document.getElementById("playlistContent");
-
-// --- HỆ THỐNG IDLE & VISUALIZER ---
-let idleTime = 0;
-const idleLimit = 15;
-const mainUI = document.getElementById("mainUI");
 const idleOverlay = document.getElementById("idleOverlay");
+
+let audioCtx, analyser, source, dataArray;
+
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        source = audioCtx.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+        requestAnimationFrame(drawLoop);
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+}
 
 function resetIdle() {
     idleTime = 0;
-    mainUI.style.opacity = "1";
-    mainUI.style.filter = "none";
+    document.getElementById("mainUI").style.opacity = "1";
+    document.getElementById("mainUI").style.filter = "none";
     idleOverlay.classList.remove("active");
 }
 
 function forceIdle() {
-    if (audio.paused) { alert("Phát nhạc để xem sóng nhạc!"); return; }
-    idleTime = idleLimit;
+    if (audio.paused) { alert("Phát nhạc để xem sóng!"); return; }
+    initAudio();
+    idleTime = 15;
     activateIdle();
 }
 
 function activateIdle() {
-    mainUI.style.opacity = "0";
-    mainUI.style.filter = "blur(10px)";
+    document.getElementById("mainUI").style.opacity = "0";
+    document.getElementById("mainUI").style.filter = "blur(10px)";
     idleOverlay.classList.add("active");
-    currentVisualizerType = Math.floor(Math.random() * 10);
-    updateIdleInfo();
-    startVisualizer();
-}
-
-function updateIdleInfo() {
+    currentVisType = Math.floor(Math.random() * 10);
+    document.getElementById("visTag").innerText = "Kiểu sóng: " + (currentVisType + 1);
     document.getElementById("idleTitle").innerText = songs[currentIndex].title;
     document.getElementById("idleArtist").innerText = songs[currentIndex].desc;
     document.getElementById("idleQuote").innerText = loveQuotes[Math.floor(Math.random() * loveQuotes.length)];
-    document.getElementById("visTag").innerText = "Chế độ sóng: " + (currentVisualizerType + 1);
 }
 
-window.onmousemove = resetIdle;
-window.onkeydown = resetIdle;
-setInterval(() => {
-    if (!audio.paused && !idleOverlay.classList.contains("active")) {
-        idleTime++;
-        if (idleTime >= idleLimit) activateIdle();
-    }
-}, 1000);
-
-let audioCtx, analyser, source, canvas, ctx, bufferLength, dataArray;
-function startVisualizer() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioCtx.createAnalyser();
-        source = audioCtx.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioCtx.destination);
-    }
-    analyser.fftSize = 256;
-    bufferLength = analyser.frequencyBinCount;
-    dataArray = new Uint8Array(bufferLength);
-    canvas = document.getElementById("visualizer");
-    ctx = canvas.getContext("2d");
-    draw();
-}
-
-function draw() {
+function drawLoop() {
+    requestAnimationFrame(drawLoop);
     if (!idleOverlay.classList.contains("active")) return;
-    requestAnimationFrame(draw);
-    analyser.getByteFrequencyData(dataArray);
+    
+    const canvas = document.getElementById("visualizer");
+    const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    analyser.getByteFrequencyData(dataArray);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const barWidth = (canvas.width / bufferLength) * 2;
-    let color = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+    const color = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
 
-    switch(currentVisualizerType) {
+    switch(currentVisType) {
         case 0: // Cột đáy
-            for (let i = 0; i < bufferLength; i++) {
+            let bw = canvas.width / dataArray.length * 2;
+            for(let i=0; i<dataArray.length; i++) {
                 let h = dataArray[i] * 1.5;
-                ctx.fillStyle = color;
-                ctx.fillRect(i * barWidth, canvas.height - h, barWidth - 2, h);
+                ctx.fillRect(i*bw, canvas.height - h, bw-2, h);
             }
             break;
-        case 1: // Cột đối xứng trên dưới
-            for (let i = 0; i < bufferLength; i++) {
+        case 1: // Đối xứng trung tâm
+            let bw2 = canvas.width / dataArray.length * 2;
+            for(let i=0; i<dataArray.length; i++) {
                 let h = dataArray[i] * 1.2;
-                ctx.fillStyle = color;
-                ctx.fillRect(i * barWidth, centerY - h/2, barWidth - 2, h);
+                ctx.fillRect(i*bw2, centerY - h/2, bw2-2, h);
             }
             break;
-        case 2: // Vòng tròn tỏa ra
+        case 2: // Vòng tròn tỏa
             ctx.beginPath();
-            ctx.arc(centerX, centerY, 100, 0, Math.PI * 2);
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            for (let i = 0; i < bufferLength; i++) {
-                let rads = Math.PI * 2 / bufferLength;
-                let h = dataArray[i] * 0.8;
-                let x = centerX + Math.cos(rads * i) * (100);
-                let y = centerY + Math.sin(rads * i) * (100);
-                let x_end = centerX + Math.cos(rads * i) * (100 + h);
-                let y_end = centerY + Math.sin(rads * i) * (100 + h);
-                ctx.moveTo(x, y); ctx.lineTo(x_end, y_end);
+            for(let i=0; i<dataArray.length; i++) {
+                let angle = (i / dataArray.length) * Math.PI * 2;
+                let r = 100 + dataArray[i] * 0.5;
+                let x = centerX + Math.cos(angle) * r;
+                let y = centerY + Math.sin(angle) * r;
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
             }
-            ctx.stroke();
+            ctx.closePath(); ctx.stroke();
             break;
-        case 3: // Sóng trung tâm tỏa sang 2 bên
-            for (let i = 0; i < bufferLength/2; i++) {
-                let h = dataArray[i] * 1.5;
-                ctx.fillStyle = color;
-                ctx.fillRect(centerX + (i * barWidth), centerY - h/2, barWidth - 2, h);
-                ctx.fillRect(centerX - (i * barWidth), centerY - h/2, barWidth - 2, h);
-            }
-            break;
-        case 4: // Những viên gạch bay
-            for (let i = 0; i < bufferLength; i+=4) {
-                let h = dataArray[i] * 2;
-                ctx.fillStyle = color;
-                ctx.globalAlpha = 0.5;
-                ctx.fillRect(i * (canvas.width/bufferLength), canvas.height - h - 50, 15, 15);
-            }
-            ctx.globalAlpha = 1;
-            break;
-        case 5: // Vòng tròn hạt bụi
-            for (let i = 0; i < bufferLength; i++) {
-                let angle = i * 4;
-                let r = dataArray[i] * 1.2;
-                let x = centerX + r * Math.cos(angle);
-                let y = centerY + r * Math.sin(angle);
-                ctx.fillStyle = "white";
-                ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI*2); ctx.fill();
-            }
-            break;
-        case 6: // Line mỏng chạy giữa
+        case 3: // Sóng Line trung tâm
             ctx.beginPath();
             ctx.moveTo(0, centerY);
-            for (let i = 0; i < bufferLength; i++) {
-                let h = (dataArray[i] - 128) * 2;
-                ctx.lineTo(i * (canvas.width/bufferLength) * 2, centerY + h);
+            for(let i=0; i<dataArray.length; i++) {
+                let x = (i / dataArray.length) * canvas.width;
+                let y = centerY + (dataArray[i] - 128) * 2;
+                ctx.lineTo(x, y);
             }
-            ctx.strokeStyle = color; ctx.stroke();
+            ctx.stroke();
             break;
-        case 7: // Cột từ 4 góc
-            let corners = [[0,0], [canvas.width, 0], [0, canvas.height], [canvas.width, canvas.height]];
-            corners.forEach(c => {
-                for(let i=0; i<20; i++) {
-                    let h = dataArray[i*2] * 0.5;
-                    ctx.fillStyle = color;
-                    ctx.fillRect(c[0], c[1], (c[0]==0?h:-h), (c[1]==0?20:-20));
-                }
-            });
-            break;
-        case 8: // Radar quét
-            let r_max = dataArray[10] * 1.5;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, r_max, 0, Math.PI*2);
-            ctx.strokeStyle = color; ctx.globalAlpha = 0.3; ctx.stroke(); ctx.globalAlpha = 1;
-            break;
-        case 9: // Mưa rơi từ trên xuống
-            for (let i = 0; i < bufferLength; i+=2) {
-                let h = dataArray[i] * 1.5;
-                ctx.fillStyle = color;
-                ctx.fillRect(i * barWidth, 0, 2, h);
+        case 4: // Hạt bụi bay
+            for(let i=0; i<dataArray.length; i+=5) {
+                let r = dataArray[i] * 1.5;
+                ctx.beginPath(); ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, r/20, 0, Math.PI*2); ctx.fill();
             }
             break;
+        case 5: // Vòng tròn gai
+            for(let i=0; i<dataArray.length; i++) {
+                let angle = (i / dataArray.length) * Math.PI * 2;
+                let h = dataArray[i] * 0.8;
+                ctx.moveTo(centerX + Math.cos(angle)*100, centerY + Math.sin(angle)*100);
+                ctx.lineTo(centerX + Math.cos(angle)*(100+h), centerY + Math.sin(angle)*(100+h));
+            }
+            ctx.stroke();
+            break;
+        case 6: // Mưa rơi
+            for(let i=0; i<dataArray.length; i+=4) {
+                ctx.fillRect(i*(canvas.width/dataArray.length)*2, 0, 2, dataArray[i]*2);
+            }
+            break;
+        default: // Mặc định cột
+            for(let i=0; i<dataArray.length; i++) {
+                ctx.fillRect(i*10, canvas.height, 8, -dataArray[i]);
+            }
     }
 }
 
-// --- LOGIC CƠ BẢN ---
-const themes = {
-    default:{"--bg-main":"linear-gradient(135deg,#1a1a1a,#3d002f)","--primary":"#ff87c9","--accent":"#ff4fab","--border":"#ff8ccd","--text-main":"#fff","--text-soft":"#ffbde6","--disc-border":"#ffb6d9","--disc-glow":"#ff7ac4","--dropdown-bg":"#3d002f","--dropdown-text":"#ffffff"},
-    dark:{"--bg-main":"linear-gradient(135deg,#000,#1a1a1a)","--primary":"#444","--accent":"#777","--border":"#333","--text-main":"#f5f5f5","--text-soft":"#ccc","--disc-border":"#555","--disc-glow":"#999","--dropdown-bg":"#1a1a1a","--dropdown-text":"#ffffff"},
-    love:{"--bg-main":"linear-gradient(135deg,#ff4f8b,#ff9acb)","--primary":"#ff2f7d","--accent":"#ff66a3","--border":"#ffb6d9","--text-main":"#fff","--text-soft":"#fff0f7","--disc-border":"#fff","--disc-glow":"#ffb6d9","--dropdown-bg":"#ff4f8b","--dropdown-text":"#ffffff"},
-    night:{"--bg-main":"linear-gradient(135deg,#0f2027,#203a43,#2c5364)","--primary":"#3fa9f5","--accent":"#00c6ff","--border":"#3fa9f5","--text-main":"#fff","--text-soft":"#ccefff","--disc-border":"#00c6ff","--disc-glow":"#3fa9f5","--dropdown-bg":"#203a43","--dropdown-text":"#ffffff"}
-};
+// Logic điều khiển
+document.getElementById("togglePlaylistBtn").onclick = () => document.getElementById("playlist").classList.toggle('hidden');
 
-function applyTheme(t){
-    Object.entries(themes[t]).forEach(([k,v])=> document.documentElement.style.setProperty(k,v));
-    localStorage.setItem("kangthy_theme",t);
-    document.getElementById("themeSelector").value = t;
-}
-document.getElementById("themeSelector").onchange=(e)=>applyTheme(e.target.value);
-applyTheme(localStorage.getItem("kangthy_theme")||"default");
-
-document.getElementById("togglePlaylistBtn").onclick = () => {
-    document.getElementById("playlist").classList.toggle('hidden');
-    playerArea.classList.toggle('full-width');
-};
-
-function updatePlaylistDisplay() {
-    playlistContent.innerHTML = songs.map((song, i) => `
-        <div class="song-item ${i === currentIndex ? 'active' : ''}" onclick="playSong(${i})">
-            <div class="song-details">
-                <div class="song-name">${song.title}</div>
-                <div class="song-stats">Lượt nghe: ${Math.round(song.playCount)} | ${song.genre}</div>
-            </div>
-            <button class="action-btn" onclick="const link=document.createElement('a');link.href='${song.file}';link.download='${song.file}';link.click();event.stopPropagation();">📥</button>
-        </div>
-    `).join('');
-}
-
-function loadSong(index) {
-    currentIndex = index;
-    const song = songs[currentIndex];
-    audio.src = song.file;
-    document.getElementById("songTitle").innerText = song.title;
-    document.getElementById("songDesc").innerText = song.desc;
-    document.getElementById("disc").style.backgroundImage = `url('${song.cover}')`;
-    if (idleOverlay.classList.contains("active")) {
-        currentVisualizerType = Math.floor(Math.random() * 10);
-        updateIdleInfo();
-    }
-    updatePlaylistDisplay();
-}
-
-function playSong(index) {
-    loadSong(index);
+function playSong(i) {
+    initAudio();
+    currentIndex = i;
+    const s = songs[i];
+    audio.src = s.file;
+    document.getElementById("songTitle").innerText = s.title;
+    document.getElementById("songDesc").innerText = s.desc;
+    document.getElementById("disc").style.backgroundImage = `url('${s.cover}')`;
     audio.play();
-    playerArea.classList.add("playing");
+    document.getElementById("playerArea").classList.add("playing");
     playBtn.textContent = '⏸️';
+    updatePlaylist();
 }
 
 playBtn.onclick = () => {
-    if (audio.paused) { audio.play(); playerArea.classList.add("playing"); playBtn.textContent = '⏸️'; }
-    else { audio.pause(); playerArea.classList.remove("playing"); playBtn.textContent = '▶️'; }
+    initAudio();
+    if (audio.paused) { audio.play(); document.getElementById("playerArea").classList.add("playing"); playBtn.textContent = '⏸️'; }
+    else { audio.pause(); document.getElementById("playerArea").classList.remove("playing"); playBtn.textContent = '▶️'; }
 };
 
-document.getElementById("nextBtn").onclick = () => {
-    currentIndex = (currentIndex + 1) % songs.length;
-    playSong(currentIndex);
-};
-
-document.getElementById("prevBtn").onclick = () => {
-    currentIndex = (currentIndex - 1 + songs.length) % songs.length;
-    playSong(currentIndex);
-};
-
-function filterSongs() {
-    const term = document.getElementById("searchInput").value.toLowerCase();
-    const genre = document.getElementById("genreFilter").value;
-    const items = document.querySelectorAll(".song-item");
-    items.forEach((item, i) => {
-        const s = songs[i];
-        const matchTerm = s.title.toLowerCase().includes(term) || s.desc.toLowerCase().includes(term);
-        const matchGenre = !genre || s.genre === genre;
-        item.style.display = (matchTerm && matchGenre) ? "flex" : "none";
-    });
-}
-
-function populateGenres() {
-    const genres = ["", ...new Set(songs.map(s => s.genre))];
-    document.getElementById("genreFilter").innerHTML = genres.map(g => `<option value="${g}">${g || "Tất cả thể loại"}</option>`).join('');
-}
-
-function formatTime(sec) {
-    let m = Math.floor(sec/60), s = Math.floor(sec%60);
-    return `${m}:${s < 10 ? '0' : ''}${s}`;
+function updatePlaylist() {
+    document.getElementById("playlistContent").innerHTML = songs.map((s, i) => `
+        <div class="song-item ${i === currentIndex ? 'active' : ''}" onclick="playSong(${i})">
+            <div style="flex:1"><b>${s.title}</b><br><small>${s.genre}</small></div>
+            <button class="btn" style="width:30px;height:30px" onclick="event.stopPropagation(); window.open('${s.file}')">📥</button>
+        </div>
+    `).join('');
 }
 
 audio.ontimeupdate = () => {
     if (audio.duration) {
         document.getElementById("progress").style.width = (audio.currentTime / audio.duration) * 100 + "%";
-        document.getElementById("currentTime").innerText = formatTime(audio.currentTime);
+        document.getElementById("currentTime").innerText = Math.floor(audio.currentTime/60) + ":" + ("0"+Math.floor(audio.currentTime%60)).slice(-2);
     }
 };
-audio.onloadedmetadata = () => document.getElementById("durationTime").innerText = formatTime(audio.duration);
+audio.onloadedmetadata = () => document.getElementById("durationTime").innerText = Math.floor(audio.duration/60) + ":" + ("0"+Math.floor(audio.duration%60)).slice(-2);
 audio.onended = () => document.getElementById("nextBtn").click();
+
+document.getElementById("nextBtn").onclick = () => playSong((currentIndex + 1) % songs.length);
+document.getElementById("prevBtn").onclick = () => playSong((currentIndex - 1 + songs.length) % songs.length);
+
 document.getElementById("progressBar").onclick = (e) => {
-    audio.currentTime = (e.offsetX / e.target.clientWidth) * audio.duration;
+    audio.currentTime = (e.offsetX / e.currentTarget.clientWidth) * audio.duration;
 };
 
-populateGenres();
-loadSong(0);
+// Theo dõi Idle
+setInterval(() => {
+    if (!audio.paused && !idleOverlay.classList.contains("active")) {
+        idleTime++;
+        if (idleTime >= 15) activateIdle();
+    }
+}, 1000);
+
+window.onmousemove = window.ontouchstart = resetIdle;
+
+// Khởi tạo
+updatePlaylist();
+document.getElementById("disc").style.backgroundImage = `url('${songs[0].cover}')`;
+document.getElementById("songTitle").innerText = songs[0].title;
+document.getElementById("songDesc").innerText = songs[0].desc;
+const genres = ["", ...new Set(songs.map(s => s.genre))];
+document.getElementById("genreFilter").innerHTML = genres.map(g => `<option value="${g}">${g || "Tất cả thể loại"}</option>`).join('');
 </script>
 </body>
 </html>
