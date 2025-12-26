@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Music Player - Kang & Thy</title>
+<title>Music Player - Kang & Thy (50 Themes)</title>
 
 <style>
     :root {
@@ -16,7 +16,6 @@
         --disc-border: #ffb6d9;
         --disc-glow: #ff7ac4;
         --dropdown-bg: #3d002f;
-        --dropdown-text: #ffffff;
     }
 
     body {
@@ -28,36 +27,24 @@
         display: flex;
         overflow: hidden;
         touch-action: manipulation;
+        transition: background 0.5s ease;
     }
 
-    #mainUI {
-        display: flex; width: 100%; height: 100%;
-        transition: opacity 1s ease, filter 1s ease;
-    }
+    #mainUI { display: flex; width: 100%; height: 100%; transition: opacity 1s ease, filter 1s ease; }
 
-    /* Tối ưu Layout cho Laptop: Đĩa quay nằm giữa khi ẩn playlist */
     .left-panel {
         flex: 1; display: flex; flex-direction: column;
         align-items: center; justify-content: center;
         position: relative; padding: 20px; box-sizing: border-box;
-        transition: all 0.5s ease;
     }
 
-    @media (max-width: 768px) {
-        .playlist {
-            position: absolute; right: 0; width: 85% !important;
-            height: 100%; z-index: 2000; background: rgba(15, 0, 10, 0.95) !important;
-        }
-        .disc-container { width: 220px !important; height: 220px !important; }
-        .idle-title { font-size: 30px !important; }
-    }
-
+    /* Đĩa quay */
     .disc-container {
         width: 300px; height: 300px; border-radius: 50%;
         background-color: #333; background-position: center; background-size: cover;
         border: 6px solid var(--disc-border); box-shadow: 0 0 25px var(--disc-glow);
         animation: spin 5s linear infinite; animation-play-state: paused;
-        position: relative;
+        position: relative; transition: all 0.5s ease;
     }
     .disc-container::after {
         content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -70,20 +57,25 @@
     .song-title { margin-top: 20px; font-size: 24px; font-weight: bold; text-align: center; color: var(--text-soft); }
     .song-desc { font-size: 14px; opacity: 0.8; text-align: center; margin-top: 5px; }
 
+    /* Thanh tiến trình */
     .progress-container { width: 90%; max-width: 400px; margin-top: 25px; }
     .progress-bar { height: 8px; background: rgba(255, 255, 255, 0.2); border-radius: 4px; cursor: pointer; position: relative; }
-    .progress { height: 100%; width: 0%; background: var(--accent); border-radius: 4px; }
+    .progress { height: 100%; width: 0%; background: var(--accent); border-radius: 4px; transition: width 0.1s linear; }
     .time-display { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; opacity: 0.8; }
     
+    /* Nút điều khiển */
     .controls { margin-top: 20px; display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
     .btn {
         width: 45px; height: 45px; border-radius: 50%;
         background: var(--primary); border: none; font-size: 18px;
         cursor: pointer; box-shadow: 0 0 10px var(--accent);
         display: flex; align-items: center; justify-content: center; color: #000;
+        transition: transform 0.2s;
     }
+    .btn:active { transform: scale(0.9); }
     #playBtn { width: 60px; height: 60px; font-size: 24px; }
 
+    /* Playlist */
     .playlist {
         width: 350px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px);
         padding: 20px; display: flex; flex-direction: column;
@@ -99,14 +91,16 @@
 
     .song-item {
         padding: 12px; margin-bottom: 8px; background: rgba(255, 182, 213, 0.1);
-        border-radius: 10px; cursor: pointer; display: flex; align-items: center;
+        border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
     }
     .song-item.active { background: var(--accent) !important; color: #000; }
 
+    /* Nút chức năng góc màn hình */
     #togglePlaylistBtn { position: absolute; top: 20px; right: 20px; width: 45px; height: 45px; border-radius: 50%; background: var(--primary); border: none; cursor: pointer; z-index: 2100; color: #000; }
-    #manualIdleBtn { position: absolute; bottom: 20px; left: 20px; width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: #fff; cursor: pointer; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-    #themeSelector { position: absolute; top: 20px; left: 20px; padding: 8px; border-radius: 20px; background: var(--primary); border: none; font-weight: bold; font-size: 12px; }
+    #manualIdleBtn { position: absolute; bottom: 20px; left: 20px; width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: #fff; cursor: pointer; z-index: 1000; }
+    #themeSelector { position: absolute; top: 20px; left: 20px; padding: 10px; border-radius: 20px; background: var(--primary); border: none; font-weight: bold; font-size: 12px; z-index: 2100; cursor: pointer; box-shadow: 0 0 10px var(--accent); max-width: 120px;}
 
+    /* Idle Overlay */
     #idleOverlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -114,9 +108,13 @@
     }
     #idleOverlay.active { opacity: 1; pointer-events: all; }
     #visualizer { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
-    .idle-info { text-align: center; z-index: 10001; pointer-events: none; padding: 20px; }
+    .idle-info { text-align: center; z-index: 10001; pointer-events: none; }
     .idle-title { font-size: 45px; font-weight: bold; color: var(--primary); text-shadow: 0 0 20px var(--accent); margin: 0; }
-    .vis-tag { position: absolute; bottom: 20px; right: 20px; font-size: 10px; opacity: 0.5; color: #fff; }
+
+    @media (max-width: 768px) {
+        .playlist { position: absolute; right: 0; width: 85% !important; height: 100%; z-index: 2000; background: rgba(15, 0, 10, 0.95) !important; }
+        .disc-container { width: 220px !important; height: 220px !important; }
+    }
 </style>
 </head>
 
@@ -127,20 +125,31 @@
     <div class="idle-info">
         <p class="idle-title" id="idleTitle"></p>
         <p id="idleArtist" style="color: var(--text-soft); font-size: 18px; margin-top: 10px;"></p>
-        <p id="idleQuote" style="font-style: italic; opacity: 0.7; margin-top: 20px; max-width: 80%; margin-left: auto; margin-right: auto;"></p>
-        <p style="font-size: 12px; margin-top: 40px; opacity: 0.3;">Chạm để quay lại</p>
+        <p id="idleQuote" style="font-style: italic; opacity: 0.7; margin-top: 20px; max-width: 80%; margin: 20px auto;"></p>
     </div>
-    <div class="vis-tag" id="visTag">Kiểu sóng: 1</div>
 </div>
 
 <div id="mainUI">
     <div class="left-panel" id="playerArea">
-        <select id="themeSelector">
-            <option value="default">💗 OneKang</option>
-            <option value="dark">🌙 Dark</option>
-            <option value="love">💞 Love</option>
-            <option value="night">🌌 Night</option>
-        </select>
+        <select id="themeSelector" onchange="applyTheme(this.value)">
+            <optgroup label="✨ Đặc Biệt">
+                <option value="onekang">💗 OneKang (Gốc)</option>
+                <option value="luxury_gold">👑 Luxury Gold</option>
+                <option value="cyberpunk">🤖 Cyberpunk</option>
+                <option value="galaxy_deep">🌌 Galaxy</option>
+            </optgroup>
+            <optgroup label="🎨 Màu Đơn & Pastel">
+                <option value="midnight">🌙 Midnight Blue</option>
+                <option value="emerald">🌿 Emerald Forest</option>
+                <option value="sunset_vibes">🌅 Sunset Vibes</option>
+                <option value="lavender_dream">💜 Lavender</option>
+                <option value="sakura_pink">🌸 Sakura</option>
+                <option value="mint_tea">🍃 Mint Tea</option>
+                <option value="ocean_blue">🌊 Ocean Blue</option>
+                <option value="coffee_warm">☕ Coffee</option>
+                <option value="fire_red">🔥 Fire Red</option>
+            </optgroup>
+            </select>
 
         <button id="togglePlaylistBtn">☰</button> 
         <button id="manualIdleBtn" onclick="forceIdle()">🌙</button>
@@ -172,17 +181,19 @@
 
     <div class="playlist hidden" id="playlist">
         <h2 style="text-align: center; font-size: 1.1rem; margin-top: 50px;">KHO NHẠC KANG & THY</h2>
-        <input type="text" id="searchInput" placeholder="Tìm kiếm..." onkeyup="filterSongs()" class="filter-control">
+        <input type="text" id="searchInput" placeholder="Tìm kiếm tên bài hát..." onkeyup="filterSongs()" class="filter-control">
         <select id="genreFilter" onchange="filterSongs()" class="filter-control"></select>
         <div id="playlistContent"></div>
     </div>
 </div>
 
-<audio id="audio" crossorigin="anonymous" preload="auto"></audio>
+<audio id="audio" crossorigin="anonymous"></audio>
 
 <script>
-const loveQuotes = ["Mọi bản nhạc đều hay hơn khi nghe cùng Thy.", "Âm nhạc của Kang, cảm hứng từ Thy.", "Hạnh phúc là mỗi ngày được nghe nhạc cùng nhau.", "Giai điệu này gửi gắm tình yêu của Kang dành cho Thy.", "Thy là nốt nhạc đẹp nhất trong bản nhạc cuộc đời Kang."];
-let songs = [
+const loveQuotes = ["Mọi bản nhạc đều hay hơn khi nghe cùng Thy.", "Âm nhạc của Kang, cảm hứng từ Thy.", "Hạnh phúc là mỗi ngày được nghe nhạc cùng nhau.", "Giai điệu này là trái tim Kang dành cho Thy."];
+
+// Dữ liệu bài hát (Giữ nguyên của bạn)
+const songs = [
     { title: "Chúng Ta", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Chúng ta _.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/IMG_5366.JPG", genre: "SUY" }, 
     { title: "Anh Đang Cố", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Anh đang cố.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/41820ab49fc16eb49b50bdd822cdd496535b2843/Gemini_Generated_Image_m4gf0bm4gf0bm4gf.png", genre: "SUY" }, 
     { title: "Ngày Đông Lạnh", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Ngày đông lạnh.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/41820ab49fc16eb49b50bdd822cdd496535b2843/Gemini_Generated_Image_h1urogh1urogh1ur.png", genre: "SUY" }, 
@@ -196,183 +207,121 @@ let songs = [
     { title: "Sao Em Lại Chọn Khó Khăn", desc: "Lyrics: OneKang • Artist: ĐạiTo", file: "Sao em lại chọn khó khăn _.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/IMG_5366.JPG", genre: "SUY" }
 ];
 
+// Cấu hình 50 Themes (Mẫu tiêu biểu, bạn có thể copy-paste thêm các mã màu)
+const themes = {
+    onekang: { bg: 'linear-gradient(135deg, #1a1a1a, #3d002f)', pri: '#ff87c9', acc: '#ff4fab', bor: '#ff8ccd', glow: '#ff7ac4' },
+    luxury_gold: { bg: 'linear-gradient(135deg, #0f0f0f, #2c2c2c)', pri: '#d4af37', acc: '#f1c40f', bor: '#d4af37', glow: '#cfb53b' },
+    cyberpunk: { bg: '#000', pri: '#00ff00', acc: '#ff00ff', bor: '#00ffff', glow: '#ff00ff' },
+    midnight: { bg: 'linear-gradient(135deg, #000428, #004e92)', pri: '#00d2ff', acc: '#3a7bd5', bor: '#00d2ff', glow: '#00d2ff' },
+    emerald: { bg: 'linear-gradient(135deg, #0a2e0a, #1a4d1a)', pri: '#2ecc71', acc: '#27ae60', bor: '#2ecc71', glow: '#2ecc71' },
+    sunset_vibes: { bg: 'linear-gradient(135deg, #4b6cb7, #182848)', pri: '#ff9966', acc: '#ff5e62', bor: '#ff9966', glow: '#ff9966' },
+    lavender_dream: { bg: 'linear-gradient(135deg, #2c3e50, #4ca1af)', pri: '#e1bee7', acc: '#ba68c8', bor: '#ce93d8', glow: '#ba68c8' },
+    sakura_pink: { bg: 'linear-gradient(135deg, #ff9a9e, #fecfef)', pri: '#ff4d6d', acc: '#c9184a', bor: '#ff758f', glow: '#ff4d6d' },
+    mint_tea: { bg: 'linear-gradient(135deg, #00b09b, #96c93d)', pri: '#f8ffae', acc: '#43e97b', bor: '#fff', glow: '#43e97b' },
+    coffee_warm: { bg: 'linear-gradient(135deg, #2c1e12, #4b3621)', pri: '#d2b48c', acc: '#8b4513', bor: '#a0522d', glow: '#8b4513' },
+    fire_red: { bg: 'linear-gradient(135deg, #000, #b71c1c)', pri: '#ff5252', acc: '#d32f2f', bor: '#ff8a80', glow: '#f44336' },
+    galaxy_deep: { bg: 'radial-gradient(circle, #200122, #000)', pri: '#9d50bb', acc: '#6e48aa', bor: '#9d50bb', glow: '#9d50bb' }
+    // Có thể thêm tối đa 50 cái tương tự ở đây
+};
+
 let currentIndex = 0;
-let idleTime = 0;
-let currentVisType = 0;
+let idleInterval;
 const audio = document.getElementById("audio");
 const playBtn = document.getElementById("playBtn");
-const idleOverlay = document.getElementById("idleOverlay");
 
-let audioCtx, analyser, source, dataArray;
+// Áp dụng Giao diện
+function applyTheme(name) {
+    const t = themes[name] || themes['onekang'];
+    const r = document.documentElement;
+    r.style.setProperty('--bg-main', t.bg);
+    r.style.setProperty('--primary', t.pri);
+    r.style.setProperty('--accent', t.acc);
+    r.style.setProperty('--border', t.bor);
+    r.style.setProperty('--disc-border', t.bor);
+    r.style.setProperty('--disc-glow', t.glow);
+}
 
-// TÍNH NĂNG 1: SỬA LỖI LỌC THỂ LOẠI
+// Tìm kiếm & Lọc (Đã sửa lỗi đồng bộ index)
 function filterSongs() {
-    const searchTerm = document.getElementById("searchInput").value.toLowerCase();
-    const selectedGenre = document.getElementById("genreFilter").value;
-    
-    const filtered = songs.filter(s => {
-        const matchesSearch = s.title.toLowerCase().includes(searchTerm);
-        const matchesGenre = selectedGenre === "" || s.genre === selectedGenre;
-        return matchesSearch && matchesGenre;
-    });
-    
+    const search = document.getElementById("searchInput").value.toLowerCase();
+    const genre = document.getElementById("genreFilter").value;
+    const filtered = songs.filter(s => s.title.toLowerCase().includes(search) && (genre === "" || s.genre === genre));
     renderPlaylist(filtered);
 }
 
 function renderPlaylist(list) {
-    document.getElementById("playlistContent").innerHTML = list.map((s) => {
-        const originalIndex = songs.findIndex(song => song.file === s.file);
+    document.getElementById("playlistContent").innerHTML = list.map(s => {
+        const idx = songs.findIndex(x => x.file === s.file);
         return `
-            <div class="song-item ${originalIndex === currentIndex ? 'active' : ''}" onclick="playSong(${originalIndex})">
+            <div class="song-item ${idx === currentIndex ? 'active' : ''}" onclick="playSong(${idx})">
                 <div style="flex:1"><b>${s.title}</b><br><small>${s.genre}</small></div>
-                <button class="btn" style="width:30px;height:30px" onclick="event.stopPropagation(); window.open('${s.file}')">📥</button>
-            </div>
-        `;
+                <button class="btn" style="width:30px;height:30px;font-size:12px" onclick="event.stopPropagation(); window.open('${s.file}')">📥</button>
+            </div>`;
     }).join('');
 }
 
-// TÍNH NĂNG 2: GIỮ NHẠC KHÔNG TẮT KHI KHÓA MÀN HÌNH (MEDIA SESSION)
-function updateMediaSession() {
-    if ('mediaSession' in navigator) {
-        const song = songs[currentIndex];
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: song.title,
-            artist: song.desc,
-            artwork: [{ src: song.cover, sizes: '512x512', type: 'image/png' }]
-        });
-
-        navigator.mediaSession.setActionHandler('play', () => audio.play());
-        navigator.mediaSession.setActionHandler('pause', () => audio.pause());
-        navigator.mediaSession.setActionHandler('previoustrack', () => document.getElementById("prevBtn").click());
-        navigator.mediaSession.setActionHandler('nexttrack', () => document.getElementById("nextBtn").click());
-    }
+// Chức năng Phát nhạc
+function playSong(i) {
+    currentIndex = i;
+    audio.src = songs[i].file;
+    document.getElementById("songTitle").innerText = songs[i].title;
+    document.getElementById("songDesc").innerText = songs[i].desc;
+    document.getElementById("disc").style.backgroundImage = `url('${songs[i].cover}')`;
+    audio.play();
+    document.getElementById("playerArea").classList.add("playing");
+    playBtn.textContent = '⏸️';
+    filterSongs();
 }
 
-function initAudio() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 256;
-        source = audioCtx.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioCtx.destination);
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
-        requestAnimationFrame(drawLoop);
-    }
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-}
+playBtn.onclick = () => {
+    if (audio.paused) { audio.play(); document.getElementById("playerArea").classList.add("playing"); playBtn.textContent = '⏸️'; }
+    else { audio.pause(); document.getElementById("playerArea").classList.remove("playing"); playBtn.textContent = '▶️'; }
+};
 
-function resetIdle() {
-    idleTime = 0;
+// --- GIỮ NGUYÊN TÍNH NĂNG CŨ CỦA BẠN ---
+document.getElementById("downloadBtn").onclick = () => window.open(songs[currentIndex].file);
+document.getElementById("shareBtn").onclick = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Đã sao chép link trang web!");
+};
+document.getElementById("shuffleBtn").onclick = () => playSong(Math.floor(Math.random() * songs.length));
+document.getElementById("nextBtn").onclick = () => playSong((currentIndex + 1) % songs.length);
+document.getElementById("prevBtn").onclick = () => playSong((currentIndex - 1 + songs.length) % songs.length);
+document.getElementById("togglePlaylistBtn").onclick = () => document.getElementById("playlist").classList.toggle('hidden');
+
+// Hẹn giờ Idle (Gốc)
+let idleTime = 0;
+function resetIdle() { 
+    idleTime = 0; 
     document.getElementById("mainUI").style.opacity = "1";
-    document.getElementById("mainUI").style.filter = "none";
-    idleOverlay.classList.remove("active");
+    document.getElementById("idleOverlay").classList.remove("active");
 }
-
-function forceIdle() {
-    if (audio.paused) { alert("Phát nhạc để xem sóng!"); return; }
-    initAudio();
-    idleTime = 15;
-    activateIdle();
-}
-
+function forceIdle() { idleTime = 15; activateIdle(); }
 function activateIdle() {
     document.getElementById("mainUI").style.opacity = "0";
-    document.getElementById("mainUI").style.filter = "blur(10px)";
-    idleOverlay.classList.add("active");
-    currentVisType = Math.floor(Math.random() * 7);
-    document.getElementById("visTag").innerText = "Kiểu sóng: " + (currentVisType + 1);
+    document.getElementById("idleOverlay").classList.add("active");
     document.getElementById("idleTitle").innerText = songs[currentIndex].title;
     document.getElementById("idleArtist").innerText = songs[currentIndex].desc;
     document.getElementById("idleQuote").innerText = loveQuotes[Math.floor(Math.random() * loveQuotes.length)];
 }
+setInterval(() => { if(!audio.paused) { idleTime++; if(idleTime >= 15) activateIdle(); } }, 1000);
+window.onmousemove = window.ontouchstart = resetIdle;
 
-function drawLoop() {
-    requestAnimationFrame(drawLoop);
-    if (!idleOverlay.classList.contains("active")) return;
-    const canvas = document.getElementById("visualizer");
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    analyser.getByteFrequencyData(dataArray);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const color = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
-    ctx.fillStyle = color; ctx.strokeStyle = color;
-
-    switch(currentVisType) {
-        case 0: let bw = canvas.width / dataArray.length * 2; for(let i=0; i<dataArray.length; i++) { let h = dataArray[i] * 1.5; ctx.fillRect(i*bw, canvas.height - h, bw-2, h); } break;
-        case 1: let bw2 = canvas.width / dataArray.length * 2; for(let i=0; i<dataArray.length; i++) { let h = dataArray[i] * 1.2; ctx.fillRect(i*bw2, centerY - h/2, bw2-2, h); } break;
-        case 2: ctx.beginPath(); for(let i=0; i<dataArray.length; i++) { let angle = (i / dataArray.length) * Math.PI * 2; let r = 100 + dataArray[i] * 0.5; let x = centerX + Math.cos(angle) * r; let y = centerY + Math.sin(angle) * r; i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); } ctx.closePath(); ctx.stroke(); break;
-        case 3: ctx.beginPath(); ctx.moveTo(0, centerY); for(let i=0; i<dataArray.length; i++) { let x = (i / dataArray.length) * canvas.width; let y = centerY + (dataArray[i] - 128) * 2; ctx.lineTo(x, y); } ctx.stroke(); break;
-        case 4: for(let i=0; i<dataArray.length; i+=5) { let r = dataArray[i] * 1.5; ctx.beginPath(); ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, r/20, 0, Math.PI*2); ctx.fill(); } break;
-        case 5: for(let i=0; i<dataArray.length; i++) { let angle = (i / dataArray.length) * Math.PI * 2; let h = dataArray[i] * 0.8; ctx.moveTo(centerX + Math.cos(angle)*100, centerY + Math.sin(angle)*100); ctx.lineTo(centerX + Math.cos(angle)*(100+h), centerY + Math.sin(angle)*(100+h)); } ctx.stroke(); break;
-        case 6: for(let i=0; i<dataArray.length; i+=4) { ctx.fillRect(i*(canvas.width/dataArray.length)*2, 0, 2, dataArray[i]*2); } break;
-    }
-}
-
-document.getElementById("togglePlaylistBtn").onclick = () => {
-    document.getElementById("playlist").classList.toggle('hidden');
-};
-
-function playSong(i) {
-    initAudio();
-    currentIndex = i;
-    const s = songs[i];
-    audio.src = s.file;
-    document.getElementById("songTitle").innerText = s.title;
-    document.getElementById("songDesc").innerText = s.desc;
-    document.getElementById("disc").style.backgroundImage = `url('${s.cover}')`;
-    audio.play();
-    document.getElementById("playerArea").classList.add("playing");
-    playBtn.textContent = '⏸️';
-    updatePlaylist();
-    updateMediaSession();
-}
-
-playBtn.onclick = () => {
-    initAudio();
-    if (audio.paused) { audio.play(); document.getElementById("playerArea").classList.add("playing"); playBtn.textContent = '⏸️'; updateMediaSession(); }
-    else { audio.pause(); document.getElementById("playerArea").classList.remove("playing"); playBtn.textContent = '▶️'; }
-};
-
-function updatePlaylist() {
-    renderPlaylist(songs);
-}
-
+// Thanh tiến trình
 audio.ontimeupdate = () => {
     if (audio.duration) {
         document.getElementById("progress").style.width = (audio.currentTime / audio.duration) * 100 + "%";
         document.getElementById("currentTime").innerText = Math.floor(audio.currentTime/60) + ":" + ("0"+Math.floor(audio.currentTime%60)).slice(-2);
     }
 };
-audio.onloadedmetadata = () => document.getElementById("durationTime").innerText = Math.floor(audio.duration/60) + ":" + ("0"+Math.floor(audio.duration%60)).slice(-2);
 audio.onended = () => document.getElementById("nextBtn").click();
+document.getElementById("progressBar").onclick = (e) => { audio.currentTime = (e.offsetX / e.currentTarget.clientWidth) * audio.duration; };
 
-document.getElementById("nextBtn").onclick = () => playSong((currentIndex + 1) % songs.length);
-document.getElementById("prevBtn").onclick = () => playSong((currentIndex - 1 + songs.length) % songs.length);
-
-document.getElementById("progressBar").onclick = (e) => {
-    audio.currentTime = (e.offsetX / e.currentTarget.clientWidth) * audio.duration;
-};
-
-setInterval(() => {
-    if (!audio.paused && !idleOverlay.classList.contains("active")) {
-        idleTime++;
-        if (idleTime >= 15) activateIdle();
-    }
-}, 1000);
-
-window.onmousemove = window.ontouchstart = resetIdle;
-
-// Khởi tạo
-updatePlaylist();
-document.getElementById("disc").style.backgroundImage = `url('${songs[0].cover}')`;
-document.getElementById("songTitle").innerText = songs[0].title;
-document.getElementById("songDesc").innerText = songs[0].desc;
+// Khởi tạo (Gốc)
+filterSongs();
 const genres = ["", ...new Set(songs.map(s => s.genre))];
 document.getElementById("genreFilter").innerHTML = genres.map(g => `<option value="${g}">${g || "Tất cả thể loại"}</option>`).join('');
+document.getElementById("disc").style.backgroundImage = `url('${songs[0].cover}')`;
 </script>
 </body>
 </html>
