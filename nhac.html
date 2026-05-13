@@ -260,17 +260,25 @@ function renderPlaylist(list) {
     }).join('');
 }
 
-// Chức năng Phát nhạc
-function playSong(i) {
+// Load bài (không tự phát - dùng khi khởi tạo)
+function loadSong(i) {
     currentIndex = i;
     audio.src = songs[i].file;
     document.getElementById("songTitle").innerText = songs[i].title;
     document.getElementById("songDesc").innerText = songs[i].desc;
     document.getElementById("disc").style.backgroundImage = `url('${songs[i].cover}')`;
-    audio.play();
+    document.getElementById("progress").style.width = "0%";
+    document.getElementById("currentTime").innerText = "0:00";
+    document.getElementById("durationTime").innerText = "0:00";
+    filterSongs();
+}
+
+// Chức năng Phát nhạc
+function playSong(i) {
+    loadSong(i);
+    audio.play().catch(() => {});
     document.getElementById("playerArea").classList.add("playing");
     playBtn.textContent = '⏸️';
-    filterSongs();
 }
 
 playBtn.onclick = () => {
@@ -315,13 +323,17 @@ audio.ontimeupdate = () => {
     }
 };
 audio.onended = () => document.getElementById("nextBtn").click();
+audio.onloadedmetadata = () => {
+    if (audio.duration) {
+        document.getElementById("durationTime").innerText = Math.floor(audio.duration/60) + ":" + ("0"+Math.floor(audio.duration%60)).slice(-2);
+    }
+};
 document.getElementById("progressBar").onclick = (e) => { audio.currentTime = (e.offsetX / e.currentTarget.clientWidth) * audio.duration; };
 
 // Khởi tạo (Gốc)
-filterSongs();
 const genres = ["", ...new Set(songs.map(s => s.genre))];
 document.getElementById("genreFilter").innerHTML = genres.map(g => `<option value="${g}">${g || "Tất cả thể loại"}</option>`).join('');
-document.getElementById("disc").style.backgroundImage = `url('${songs[0].cover}')`;
+loadSong(0); // Load bài đầu tiên (không tự phát)
 </script>
 </body>
 </html>
